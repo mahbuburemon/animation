@@ -1,0 +1,2037 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mahbubur Rahman — Digital Craft</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg: #020504;
+            --green: #63ffd8;
+            --green-soft: #1dd6aa;
+            --text: #f2f7f5;
+            --muted: rgba(242, 247, 245, .48);
+            --line: rgba(255, 255, 255, .09);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg);
+            font-family: "Inter", sans-serif;
+            color: var(--text);
+        }
+
+        body {
+            cursor: none;
+        }
+
+        /* =====================================================
+   CANVAS
+===================================================== */
+
+        #scene {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+        }
+
+        /* =====================================================
+   BACKGROUND
+===================================================== */
+
+        .background {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+
+            background:
+                radial-gradient(circle at 72% 50%,
+                    rgba(25, 255, 190, .08),
+                    transparent 24%),
+                radial-gradient(circle at 30% 40%,
+                    rgba(0, 255, 170, .035),
+                    transparent 30%),
+                #020504;
+        }
+
+        .background::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(rgba(255, 255, 255, .018) 1px,
+                    transparent 1px),
+                linear-gradient(90deg,
+                    rgba(255, 255, 255, .018) 1px,
+                    transparent 1px);
+
+            background-size: 80px 80px;
+
+            mask-image:
+                linear-gradient(to bottom,
+                    transparent,
+                    black 25%,
+                    black 75%,
+                    transparent);
+
+            opacity: .25;
+        }
+
+        /* =====================================================
+   NAVBAR
+===================================================== */
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 92px;
+
+            padding: 0 6vw;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            z-index: 20;
+
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+
+            backdrop-filter: blur(12px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        .logo-mark {
+            width: 28px;
+            height: 28px;
+
+            border: 1px solid rgba(99, 255, 216, .5);
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 50%;
+
+            color: var(--green);
+
+            box-shadow:
+                0 0 25px rgba(99, 255, 216, .08);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, .5);
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: rgba(255, 255, 255, .42);
+
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: var(--green);
+
+            box-shadow:
+                0 0 12px var(--green);
+        }
+
+        /* =====================================================
+   HERO
+===================================================== */
+
+        .hero {
+            position: fixed;
+
+            left: 7vw;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            z-index: 10;
+
+            pointer-events: none;
+        }
+
+        .kicker {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            margin-bottom: 25px;
+
+            color: var(--green);
+
+            font-size: 10px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .kicker-line {
+            width: 32px;
+            height: 1px;
+
+            background: var(--green);
+
+            box-shadow:
+                0 0 15px var(--green);
+        }
+
+        .hero h1 {
+            font-size: clamp(58px,
+                    8vw,
+                    128px);
+
+            line-height: .84;
+
+            letter-spacing: -7px;
+
+            font-weight: 800;
+
+            max-width: 800px;
+        }
+
+        .hero h1 .outline {
+            color: transparent;
+
+            -webkit-text-stroke:
+                1px rgba(255, 255, 255, .55);
+        }
+
+        .hero-description {
+            max-width: 410px;
+
+            margin-top: 32px;
+
+            color: var(--muted);
+
+            font-size: 14px;
+
+            line-height: 1.8;
+        }
+
+        .hero-button {
+            display: inline-flex;
+
+            margin-top: 35px;
+
+            padding: 14px 21px;
+
+            border: 1px solid rgba(99, 255, 216, .3);
+
+            color: white;
+
+            font-size: 10px;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+
+            background:
+                rgba(99, 255, 216, .035);
+
+            backdrop-filter: blur(10px);
+
+            pointer-events: auto;
+
+            transition:
+                .3s ease;
+        }
+
+        .hero-button:hover {
+            background:
+                rgba(99, 255, 216, .12);
+
+            border-color:
+                rgba(99, 255, 216, .7);
+
+            box-shadow:
+                0 0 35px rgba(99, 255, 216, .1);
+        }
+
+        /* =====================================================
+   DRAGON LABEL
+===================================================== */
+
+        .dragon-label {
+            position: fixed;
+
+            right: 7vw;
+            bottom: 9vh;
+
+            z-index: 10;
+
+            text-align: right;
+
+            pointer-events: none;
+        }
+
+        .dragon-label-small {
+            color: rgba(255, 255, 255, .28);
+
+            font-size: 9px;
+
+            letter-spacing: 3px;
+
+            text-transform: uppercase;
+        }
+
+        .dragon-label-big {
+            margin-top: 7px;
+
+            color: rgba(255, 255, 255, .65);
+
+            font-size: 12px;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+        /* =====================================================
+   SCROLL INDICATOR
+===================================================== */
+
+        .bottom-left {
+            position: fixed;
+
+            left: 7vw;
+            bottom: 7vh;
+
+            z-index: 10;
+
+            color: rgba(255, 255, 255, .25);
+
+            font-size: 9px;
+
+            letter-spacing: 3px;
+
+            text-transform: uppercase;
+        }
+
+        /* =====================================================
+   CURSOR
+===================================================== */
+
+        .cursor-core {
+            position: fixed;
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #baffef;
+
+            box-shadow:
+                0 0 8px var(--green),
+                0 0 25px var(--green);
+
+            pointer-events: none;
+
+            z-index: 100;
+        }
+
+        .cursor-ring {
+            position: fixed;
+
+            width: 42px;
+            height: 42px;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(99, 255, 216, .25);
+
+            pointer-events: none;
+
+            z-index: 99;
+
+            transform:
+                translate(-50%, -50%);
+
+            transition:
+                width .25s ease,
+                height .25s ease,
+                border-color .25s ease;
+        }
+
+        /* =====================================================
+   LOADER
+===================================================== */
+
+        .loader {
+            position: fixed;
+            inset: 0;
+
+            background: #020504;
+
+            z-index: 999;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            transition:
+                opacity 1s ease,
+                visibility 1s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-title {
+            font-size: 10px;
+
+            letter-spacing: 5px;
+
+            color: rgba(255, 255, 255, .4);
+
+            text-transform: uppercase;
+        }
+
+        .loader-line {
+            width: 180px;
+            height: 1px;
+
+            margin: 20px auto;
+
+            background:
+                rgba(255, 255, 255, .08);
+
+            overflow: hidden;
+        }
+
+        .loader-line span {
+            display: block;
+
+            width: 40%;
+            height: 100%;
+
+            background: var(--green);
+
+            box-shadow:
+                0 0 20px var(--green);
+
+            animation:
+                loading 1.3s infinite ease-in-out;
+        }
+
+        @keyframes loading {
+
+            0% {
+                transform:
+                    translateX(-120%);
+            }
+
+            100% {
+                transform:
+                    translateX(350%);
+            }
+        }
+
+        /* =====================================================
+   MOBILE
+===================================================== */
+
+        @media(max-width: 800px) {
+
+            body {
+                cursor: auto;
+            }
+
+            .navbar {
+                height: 75px;
+
+                padding: 0 6vw;
+            }
+
+            .nav-link {
+                display: none;
+            }
+
+            .hero {
+                left: 7vw;
+                right: 7vw;
+                top: 39%;
+            }
+
+            .hero h1 {
+                font-size: 58px;
+
+                letter-spacing:
+                    -4px;
+            }
+
+            .hero-description {
+                font-size: 12px;
+
+                max-width: 340px;
+            }
+
+            .dragon-label,
+            .bottom-left {
+                display: none;
+            }
+
+            .cursor-core,
+            .cursor-ring {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background"></div>
+
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-title">
+                Awakening
+            </div>
+
+            <div class="loader-line">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="scene"></div>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            <div class="logo-mark">
+                M
+            </div>
+
+            MAHBUBUR
+        </div>
+
+        <div class="nav-right">
+
+            <div class="nav-link">
+                Work
+            </div>
+
+            <div class="nav-link">
+                About
+            </div>
+
+            <div class="status">
+
+                <span class="status-dot"></span>
+
+                Available
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="kicker">
+
+            <span class="kicker-line"></span>
+
+            Digital Craft
+
+        </div>
+
+        <h1>
+
+            BUILDING
+            <span class="outline">
+                SYSTEMS.
+            </span>
+
+        </h1>
+
+        <p class="hero-description">
+
+            Full Stack Developer creating
+            scalable digital systems,
+            workflow automation and
+            interactive experiences.
+
+        </p>
+
+        <div class="hero-button">
+
+            Explore Work
+
+        </div>
+
+    </section>
+
+
+    <!-- DRAGON LABEL -->
+
+    <div class="dragon-label">
+
+        <div class="dragon-label-small">
+            Interactive Entity
+        </div>
+
+        <div class="dragon-label-big">
+            Cursor Bound · 01
+        </div>
+
+    </div>
+
+
+    <div class="bottom-left">
+        Move your cursor to awaken
+    </div>
+
+
+    <!-- CURSOR -->
+
+    <div class="cursor-core" id="cursorCore">
+    </div>
+
+    <div class="cursor-ring" id="cursorRing">
+    </div>
+
+
+    <script type="importmap">
+{
+    "imports": {
+        "three":
+        "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+
+        "three/addons/":
+        "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+}
+</script>
+
+
+    <script type="module">
+
+        import * as THREE
+            from "three";
+
+        import {
+            EffectComposer
+        }
+            from "three/addons/postprocessing/EffectComposer.js";
+
+        import {
+            RenderPass
+        }
+            from "three/addons/postprocessing/RenderPass.js";
+
+        import {
+            UnrealBloomPass
+        }
+            from "three/addons/postprocessing/UnrealBloomPass.js";
+
+
+        /* =========================================================
+           SCENE
+        ========================================================= */
+
+        const scene =
+            new THREE.Scene();
+
+        scene.background =
+            new THREE.Color(
+                0x020504
+            );
+
+        scene.fog =
+            new THREE.FogExp2(
+                0x020504,
+                .028
+            );
+
+
+        /* =========================================================
+           CAMERA
+        ========================================================= */
+
+        const camera =
+            new THREE.PerspectiveCamera(
+                42,
+                innerWidth / innerHeight,
+                .1,
+                100
+            );
+
+        camera.position.set(
+            0,
+            .5,
+            13
+        );
+
+
+        /* =========================================================
+           RENDERER
+        ========================================================= */
+
+        const renderer =
+            new THREE.WebGLRenderer({
+
+                antialias: true,
+
+                powerPreference:
+                    "high-performance"
+
+            });
+
+        renderer.setSize(
+            innerWidth,
+            innerHeight
+        );
+
+        renderer.setPixelRatio(
+            Math.min(
+                devicePixelRatio,
+                2
+            )
+        );
+
+        renderer.outputColorSpace =
+            THREE.SRGBColorSpace;
+
+        renderer.toneMapping =
+            THREE.ACESFilmicToneMapping;
+
+        renderer.toneMappingExposure =
+            1.15;
+
+        renderer.shadowMap.enabled =
+            true;
+
+        renderer.shadowMap.type =
+            THREE.PCFSoftShadowMap;
+
+        document
+            .getElementById("scene")
+            .appendChild(
+                renderer.domElement
+            );
+
+
+        /* =========================================================
+           POST PROCESSING
+        ========================================================= */
+
+        const composer =
+            new EffectComposer(
+                renderer
+            );
+
+        composer.addPass(
+            new RenderPass(
+                scene,
+                camera
+            )
+        );
+
+        const bloom =
+            new UnrealBloomPass(
+                new THREE.Vector2(
+                    innerWidth,
+                    innerHeight
+                ),
+
+                .65,
+                .65,
+                .2
+            );
+
+        composer.addPass(
+            bloom
+        );
+
+
+        /* =========================================================
+           LIGHTING
+        ========================================================= */
+
+        scene.add(
+            new THREE.AmbientLight(
+                0x12231f,
+                1.4
+            )
+        );
+
+
+        /* KEY */
+
+        const key =
+            new THREE.DirectionalLight(
+                0xffffff,
+                4
+            );
+
+        key.position.set(
+            5,
+            8,
+            8
+        );
+
+        key.castShadow = true;
+
+        scene.add(key);
+
+
+        /* GREEN RIM */
+
+        const green =
+            new THREE.PointLight(
+                0x35ffd0,
+                85,
+                22
+            );
+
+        green.position.set(
+            -6,
+            3,
+            -5
+        );
+
+        scene.add(green);
+
+
+        /* PURPLE EDGE */
+
+        const purple =
+            new THREE.PointLight(
+                0x7354ff,
+                45,
+                18
+            );
+
+        purple.position.set(
+            6,
+            -2,
+            -5
+        );
+
+        scene.add(purple);
+
+
+        /* =========================================================
+           MATERIALS
+        ========================================================= */
+
+        const skin =
+            new THREE.MeshStandardMaterial({
+
+                color:
+                    0x101817,
+
+                roughness:
+                    .48,
+
+                metalness:
+                    .52
+
+            });
+
+        const wingSkin =
+            new THREE.MeshStandardMaterial({
+
+                color:
+                    0x09100f,
+
+                roughness:
+                    .68,
+
+                metalness:
+                    .2,
+
+                side:
+                    THREE.DoubleSide
+
+            });
+
+        const horn =
+            new THREE.MeshStandardMaterial({
+
+                color:
+                    0x3a4643,
+
+                roughness:
+                    .28,
+
+                metalness:
+                    .8
+
+            });
+
+        const eye =
+            new THREE.MeshBasicMaterial({
+
+                color:
+                    0x6effdc
+
+            });
+
+
+        /* =========================================================
+           DRAGON
+        ========================================================= */
+
+        const dragon =
+            new THREE.Group();
+
+        dragon.position.set(
+            1.5,
+            .2,
+            0
+        );
+
+        dragon.scale.setScalar(
+            1.05
+        );
+
+        scene.add(
+            dragon
+        );
+
+
+        /* =========================================================
+           BODY
+        ========================================================= */
+
+        const body =
+            new THREE.Mesh(
+
+                new THREE.SphereGeometry(
+                    1.25,
+                    32,
+                    24
+                ),
+
+                skin
+
+            );
+
+        body.scale.set(
+            1.45,
+            .82,
+            1.95
+        );
+
+        dragon.add(
+            body
+        );
+
+
+        /* =========================================================
+           NECK
+        ========================================================= */
+
+        const neck =
+            new THREE.Mesh(
+
+                new THREE.CylinderGeometry(
+                    .48,
+                    .68,
+                    2.2,
+                    24
+                ),
+
+                skin
+
+            );
+
+        neck.rotation.x =
+            Math.PI / 2;
+
+        neck.position.z =
+            -1.45;
+
+        dragon.add(
+            neck
+        );
+
+
+        /* =========================================================
+           HEAD
+        ========================================================= */
+
+        const head =
+            new THREE.Mesh(
+
+                new THREE.SphereGeometry(
+                    .7,
+                    32,
+                    24
+                ),
+
+                skin
+
+            );
+
+        head.scale.set(
+            1.05,
+            .9,
+            1.25
+        );
+
+        head.position.set(
+            0,
+            .08,
+            -2.55
+        );
+
+        dragon.add(
+            head
+        );
+
+
+        /* =========================================================
+           SNOUT
+        ========================================================= */
+
+        const snout =
+            new THREE.Mesh(
+
+                new THREE.ConeGeometry(
+                    .36,
+                    1,
+                    4
+                ),
+
+                skin
+
+            );
+
+        snout.rotation.x =
+            -Math.PI / 2;
+
+        snout.position.z =
+            -3.25;
+
+        dragon.add(
+            snout
+        );
+
+
+        /* =========================================================
+           HORNS
+        ========================================================= */
+
+        function makeHorn(x) {
+
+            const h =
+                new THREE.Mesh(
+
+                    new THREE.ConeGeometry(
+                        .14,
+                        .8,
+                        12
+                    ),
+
+                    horn
+
+                );
+
+            h.position.set(
+                x,
+                .65,
+                -2.5
+            );
+
+            h.rotation.z =
+                x < 0
+                    ? -.5
+                    : .5;
+
+            h.rotation.x =
+                -.25;
+
+            dragon.add(h);
+        }
+
+        makeHorn(-.42);
+        makeHorn(.42);
+
+
+        /* =========================================================
+           EYES
+        ========================================================= */
+
+        function makeEye(x) {
+
+            const e =
+                new THREE.Mesh(
+
+                    new THREE.SphereGeometry(
+                        .065,
+                        16,
+                        16
+                    ),
+
+                    eye
+
+                );
+
+            e.position.set(
+                x,
+                .2,
+                -3.08
+            );
+
+            dragon.add(e);
+        }
+
+        makeEye(-.31);
+        makeEye(.31);
+
+
+        /* =========================================================
+           EYE GLOW
+        ========================================================= */
+
+        const eyeGlow =
+            new THREE.PointLight(
+                0x58ffe0,
+                12,
+                4
+            );
+
+        eyeGlow.position.set(
+            0,
+            .2,
+            -3
+        );
+
+        dragon.add(
+            eyeGlow
+        );
+
+
+        /* =========================================================
+           WINGS
+        ========================================================= */
+
+        function createWing(side) {
+
+            const root =
+                new THREE.Group();
+
+            root.position.set(
+                side * .8,
+                .45,
+                -.25
+            );
+
+            dragon.add(
+                root
+            );
+
+
+            const upper =
+                new THREE.Mesh(
+
+                    new THREE.ConeGeometry(
+                        1.9,
+                        3.2,
+                        3
+                    ),
+
+                    wingSkin
+
+                );
+
+            upper.scale.set(
+                1,
+                .65,
+                .25
+            );
+
+            upper.rotation.x =
+                Math.PI / 2;
+
+            upper.rotation.z =
+                side * -.7;
+
+            upper.position.x =
+                side * 1.1;
+
+            root.add(
+                upper
+            );
+
+
+            const middle =
+                new THREE.Group();
+
+            middle.position.x =
+                side * 1.35;
+
+            root.add(
+                middle
+            );
+
+
+            const tip =
+                new THREE.Mesh(
+
+                    new THREE.ConeGeometry(
+                        .8,
+                        2.2,
+                        3
+                    ),
+
+                    wingSkin
+
+                );
+
+            tip.scale.set(
+                1,
+                .7,
+                .2
+            );
+
+            tip.rotation.x =
+                Math.PI / 2;
+
+            tip.rotation.z =
+                side * -.2;
+
+            tip.position.x =
+                side * .9;
+
+            middle.add(
+                tip
+            );
+
+
+            return {
+                root,
+                middle
+            };
+        }
+
+        const leftWing =
+            createWing(-1);
+
+        const rightWing =
+            createWing(1);
+
+
+        /* =========================================================
+           LEGS
+        ========================================================= */
+
+        function createLeg(
+            x,
+            z
+        ) {
+
+            const leg =
+                new THREE.Group();
+
+            leg.position.set(
+                x,
+                -.55,
+                z
+            );
+
+            dragon.add(
+                leg
+            );
+
+
+            const upper =
+                new THREE.Mesh(
+
+                    new THREE.CylinderGeometry(
+                        .15,
+                        .22,
+                        1.15,
+                        12
+                    ),
+
+                    skin
+
+                );
+
+            upper.position.y =
+                -.48;
+
+            upper.rotation.z =
+                x > 0
+                    ? -.2
+                    : .2;
+
+            leg.add(
+                upper
+            );
+
+
+            const claw =
+                new THREE.Mesh(
+
+                    new THREE.ConeGeometry(
+                        .09,
+                        .5,
+                        8
+                    ),
+
+                    horn
+
+                );
+
+            claw.rotation.x =
+                Math.PI / 2;
+
+            claw.position.set(
+                0,
+                -1.05,
+                -.25
+            );
+
+            leg.add(
+                claw
+            );
+        }
+
+        createLeg(-.7, -.65);
+        createLeg(.7, -.65);
+        createLeg(-.7, .65);
+        createLeg(.7, .65);
+
+
+        /* =========================================================
+           TAIL
+        ========================================================= */
+
+        const tail = [];
+
+        let parent =
+            dragon;
+
+        for (
+            let i = 0;
+            i < 11;
+            i++
+        ) {
+
+            const s =
+                new THREE.Mesh(
+
+                    new THREE.SphereGeometry(
+                        Math.max(
+                            .5 - i * .045,
+                            .07
+                        ),
+                        18,
+                        14
+                    ),
+
+                    skin
+
+                );
+
+            s.scale.set(
+                1,
+                .8,
+                1.35
+            );
+
+            s.position.z =
+                1.35 +
+                i * .5;
+
+            parent.add(
+                s
+            );
+
+            tail.push(
+                s
+            );
+
+            parent =
+                s;
+        }
+
+
+        /* =========================================================
+           MOUSE
+        ========================================================= */
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        let targetX = 0;
+        let targetY = 0;
+
+        window.addEventListener(
+            "pointermove",
+            e => {
+
+                mouseX =
+                    (e.clientX /
+                        innerWidth) * 2 - 1;
+
+                mouseY =
+                    -(e.clientY /
+                        innerHeight) * 2 + 1;
+
+                targetX =
+                    mouseX * 4.5;
+
+                targetY =
+                    mouseY * 2.8;
+
+            }
+        );
+
+
+        /* =========================================================
+           PHYSICS
+        ========================================================= */
+
+        const velocity =
+            new THREE.Vector3();
+
+        const desired =
+            new THREE.Vector3();
+
+        const target =
+            new THREE.Vector3();
+
+        function updateDragon(time) {
+
+            target.set(
+                targetX,
+                targetY,
+                Math.sin(
+                    time * .35
+                ) * .35
+            );
+
+
+            const direction =
+                target
+                    .clone()
+                    .sub(
+                        dragon.position
+                    );
+
+            const distance =
+                direction.length();
+
+            if (
+                distance > .001
+            ) {
+
+                direction.normalize();
+
+                const speed =
+                    Math.min(
+                        distance * .025,
+                        .13
+                    );
+
+                desired
+                    .copy(direction)
+                    .multiplyScalar(
+                        speed
+                    );
+
+                velocity.lerp(
+                    desired,
+                    .075
+                );
+
+            }
+
+
+            dragon.position.add(
+                velocity
+            );
+
+
+            /* =====================================================
+               BODY ROTATION
+            ===================================================== */
+
+            const look =
+                dragon.position
+                    .clone()
+                    .add(
+                        velocity
+                            .clone()
+                            .multiplyScalar(10)
+                    );
+
+            const dummy =
+                new THREE.Object3D();
+
+            dummy.position.copy(
+                dragon.position
+            );
+
+            dummy.lookAt(
+                look
+            );
+
+            dragon.quaternion.slerp(
+                dummy.quaternion,
+                .055
+            );
+
+
+            /* =====================================================
+               BANKING
+            ===================================================== */
+
+            const bank =
+                THREE.MathUtils.clamp(
+                    -velocity.x * 4,
+                    -.45,
+                    .45
+                );
+
+            dragon.rotation.z =
+                THREE.MathUtils.lerp(
+                    dragon.rotation.z,
+                    bank,
+                    .06
+                );
+
+
+            /* =====================================================
+               FLIGHT SPEED
+            ===================================================== */
+
+            const speed =
+                velocity.length();
+
+            const wingFrequency =
+                3 +
+                speed * 50;
+
+            const flap =
+                Math.sin(
+                    time *
+                    wingFrequency
+                );
+
+
+            leftWing.root.rotation.z =
+                -flap * .24;
+
+            rightWing.root.rotation.z =
+                flap * .24;
+
+
+            leftWing.middle.rotation.z =
+                -flap * .17;
+
+            rightWing.middle.rotation.z =
+                flap * .17;
+
+
+            /* =====================================================
+               TAIL
+            ===================================================== */
+
+            tail.forEach(
+                (segment, i) => {
+
+                    const wave =
+                        Math.sin(
+                            time * 2.2 -
+                            i * .55
+                        );
+
+                    segment.rotation.y =
+                        wave *
+                        (.1 + speed * 2.2);
+
+                    segment.rotation.x =
+                        Math.sin(
+                            time * 1.8 -
+                            i * .4
+                        ) * .035;
+
+                }
+            );
+
+
+            /* =====================================================
+               BREATHING
+            ===================================================== */
+
+            const breathing =
+                Math.sin(
+                    time * 2
+                ) * .012;
+
+            body.scale.y =
+                .82 +
+                breathing;
+
+        }
+
+
+        /* =========================================================
+           PARTICLES
+        ========================================================= */
+
+        const particleCount =
+            900;
+
+        const particlePositions =
+            new Float32Array(
+                particleCount * 3
+            );
+
+        for (
+            let i = 0;
+            i < particleCount;
+            i++
+        ) {
+
+            const i3 =
+                i * 3;
+
+            particlePositions[i3] =
+                (Math.random() - .5) * 35;
+
+            particlePositions[i3 + 1] =
+                (Math.random() - .5) * 20;
+
+            particlePositions[i3 + 2] =
+                (Math.random() - .5) * 25;
+
+        }
+
+        const particleGeometry =
+            new THREE.BufferGeometry();
+
+        particleGeometry.setAttribute(
+            "position",
+            new THREE.BufferAttribute(
+                particlePositions,
+                3
+            )
+        );
+
+        const particleMaterial =
+            new THREE.PointsMaterial({
+
+                color:
+                    0x5effd5,
+
+                size:
+                    .022,
+
+                transparent:
+                    true,
+
+                opacity:
+                    .48,
+
+                depthWrite:
+                    false,
+
+                blending:
+                    THREE.AdditiveBlending
+
+            });
+
+        const particleSystem =
+            new THREE.Points(
+                particleGeometry,
+                particleMaterial
+            );
+
+        scene.add(
+            particleSystem
+        );
+
+
+        /* =========================================================
+           CURSOR
+        ========================================================= */
+
+        const cursorCore =
+            document.getElementById(
+                "cursorCore"
+            );
+
+        const cursorRing =
+            document.getElementById(
+                "cursorRing"
+            );
+
+        let cursorX = 0;
+        let cursorY = 0;
+
+        let ringX = 0;
+        let ringY = 0;
+
+        window.addEventListener(
+            "pointermove",
+            e => {
+
+                cursorX =
+                    e.clientX;
+
+                cursorY =
+                    e.clientY;
+
+                cursorCore.style.left =
+                    cursorX + "px";
+
+                cursorCore.style.top =
+                    cursorY + "px";
+
+            }
+        );
+
+
+        /* =========================================================
+           CLICK ENERGY
+        ========================================================= */
+
+        const clickEffects = [];
+
+        window.addEventListener(
+            "pointerdown",
+            e => {
+
+                const geometry =
+                    new THREE.RingGeometry(
+                        .05,
+                        .12,
+                        40
+                    );
+
+                const material =
+                    new THREE.MeshBasicMaterial({
+
+                        color:
+                            0x63ffd8,
+
+                        transparent:
+                            true,
+
+                        opacity:
+                            .9,
+
+                        side:
+                            THREE.DoubleSide
+
+                    });
+
+                const ring =
+                    new THREE.Mesh(
+                        geometry,
+                        material
+                    );
+
+                ring.position.set(
+                    (e.clientX /
+                        innerWidth -
+                        .5) * 12,
+
+                    -(e.clientY /
+                        innerHeight -
+                        .5) * 7,
+
+                    3
+                );
+
+                scene.add(
+                    ring
+                );
+
+                clickEffects.push({
+                    mesh: ring,
+                    life: 1
+                });
+
+            }
+        );
+
+
+        /* =========================================================
+           CLICK UPDATE
+        ========================================================= */
+
+        function updateClicks() {
+
+            for (
+                let i =
+                    clickEffects.length - 1;
+
+                i >= 0;
+
+                i--
+            ) {
+
+                const effect =
+                    clickEffects[i];
+
+                effect.life -=
+                    .035;
+
+                effect.mesh.scale.multiplyScalar(
+                    1.08
+                );
+
+                effect.mesh.material.opacity =
+                    effect.life;
+
+                if (
+                    effect.life <= 0
+                ) {
+
+                    scene.remove(
+                        effect.mesh
+                    );
+
+                    effect.mesh.geometry.dispose();
+
+                    effect.mesh.material.dispose();
+
+                    clickEffects.splice(
+                        i,
+                        1
+                    );
+
+                }
+
+            }
+        }
+
+
+        /* =========================================================
+           CAMERA
+        ========================================================= */
+
+        function updateCamera() {
+
+            const speed =
+                velocity.length();
+
+            const desiredX =
+                dragon.position.x *
+                .08;
+
+            const desiredY =
+                dragon.position.y *
+                .04 +
+                .45;
+
+            camera.position.x +=
+                (desiredX -
+                    camera.position.x) *
+                .018;
+
+            camera.position.y +=
+                (desiredY -
+                    camera.position.y) *
+                .018;
+
+            camera.position.z =
+                13 -
+                Math.min(
+                    speed * 3,
+                    .8
+                );
+
+            camera.lookAt(
+                dragon.position.x * .08,
+                dragon.position.y * .05,
+                0
+            );
+        }
+
+
+        /* =========================================================
+           ANIMATION
+        ========================================================= */
+
+        const clock =
+            new THREE.Clock();
+
+        function animate() {
+
+            requestAnimationFrame(
+                animate
+            );
+
+            const time =
+                clock.getElapsedTime();
+
+            updateDragon(
+                time
+            );
+
+            updateClicks();
+
+            updateCamera();
+
+
+            /* subtle environment */
+
+            particleSystem.rotation.y =
+                time * .003;
+
+
+            /* cursor ring */
+
+            ringX +=
+                (cursorX - ringX) *
+                .12;
+
+            ringY +=
+                (cursorY - ringY) *
+                .12;
+
+            cursorRing.style.left =
+                ringX + "px";
+
+            cursorRing.style.top =
+                ringY + "px";
+
+
+            composer.render();
+
+        }
+
+        animate();
+
+
+        /* =========================================================
+           RESIZE
+        ========================================================= */
+
+        window.addEventListener(
+            "resize",
+            () => {
+
+                camera.aspect =
+                    innerWidth /
+                    innerHeight;
+
+                camera.updateProjectionMatrix();
+
+                renderer.setSize(
+                    innerWidth,
+                    innerHeight
+                );
+
+                composer.setSize(
+                    innerWidth,
+                    innerHeight
+                );
+
+                renderer.setPixelRatio(
+                    Math.min(
+                        devicePixelRatio,
+                        2
+                    )
+                );
+
+            }
+        );
+
+
+        /* =========================================================
+           LOADER
+        ========================================================= */
+
+        window.addEventListener(
+            "load",
+            () => {
+
+                setTimeout(
+                    () => {
+
+                        document
+                            .getElementById(
+                                "loader"
+                            )
+                            .classList.add(
+                                "hidden"
+                            );
+
+                    },
+                    1000
+                );
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
+```

@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Scorpio Cursor 🦂</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&family=JetBrains+Mono:wght@700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090a0f;
+      --card-bg: rgba(14, 16, 25, 0.88);
+      --card-border: rgba(255, 255, 255, 0.09);
+      --accent: #00f5d4;
+      --accent-glow: rgba(0, 245, 212, 0.35);
+      --text-main: #f1f5f9;
+      --text-muted: #64748b;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      cursor: none;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-main);
+      user-select: none;
+    }
+
+    /* Ambient background grid & vignette */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 50% 50%, rgba(20, 24, 38, 0.6) 0%, rgba(9, 10, 15, 0.98) 80%),
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 100% 100%, 48px 48px, 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Target canvas */
+    canvas {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+    }
+
+
+
+    /* Real-time zero-lag arrow pointer */
+    #pointer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 22px;
+      height: 28px;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-3px, -3px);
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 6px var(--accent-glow));
+      transition: transform 0.08s ease-out;
+    }
+
+    #pointer.clicking {
+      transform: translate(-3px, -3px) scale(0.85);
+    }
+
+    /* Top interactive controls bar */
+    .topbar {
+      position: fixed;
+      top: 18px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      pointer-events: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .brand-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .brand-sub {
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      margin-left: 2px;
+    }
+
+    .controls-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Theme Chips */
+    .theme-picker {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 17, 26, 0.7);
+      padding: 4px 6px;
+      border-radius: 24px;
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+    }
+
+    .theme-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .theme-btn:hover {
+      transform: scale(1.15);
+    }
+
+    .theme-btn.active {
+      border-color: #fff;
+      transform: scale(1.18);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 17, 26, 0.7);
+      color: rgba(255, 255, 255, 0.75);
+      border: 1px solid var(--card-border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-family: 'Fira Code', monospace;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+
+    .btn-toggle:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-toggle.active {
+      color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+
+    /* Bottom code snippet terminal (exact viral showcase design) */
+    #footer-card {
+      position: fixed;
+      bottom: 24px;
+      right: 28px;
+      width: min(92vw, 410px);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 245, 212, 0.04);
+      overflow: hidden;
+      z-index: 100;
+      pointer-events: auto;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    #footer-card:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px var(--accent-glow);
+    }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.025);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .terminal-dots {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      display: inline-block;
+      cursor: pointer;
+      opacity: 0.88;
+      transition: opacity 0.2s ease;
+    }
+
+    .dot:hover {
+      opacity: 1;
+    }
+
+    .dot.red {
+      background: #ff5f56;
+    }
+
+    .dot.yellow {
+      background: #ffbd2e;
+    }
+
+    .dot.green {
+      background: #27c93f;
+    }
+
+    .terminal-title {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.4);
+      font-family: 'Fira Code', monospace;
+      letter-spacing: 0.05em;
+    }
+
+    .terminal-copy {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 11px;
+      font-family: 'Fira Code', monospace;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .terminal-copy:hover {
+      color: #fff;
+    }
+
+    .code-body {
+      padding: 14px 16px 16px;
+      font-family: 'Fira Code', monospace;
+      font-size: 12px;
+      line-height: 1.72;
+      color: #cbd5e1;
+    }
+
+    .code-row {
+      display: flex;
+      gap: 14px;
+    }
+
+    .ln {
+      color: rgba(255, 255, 255, 0.2);
+      user-select: none;
+      min-width: 18px;
+      text-align: right;
+    }
+
+    .kw {
+      color: #c084fc;
+      font-weight: 500;
+    }
+
+    .fn {
+      color: #60a5fa;
+    }
+
+    .str {
+      color: #f472b6;
+    }
+
+    .num {
+      color: #fb923c;
+    }
+
+    .var {
+      color: #38bdf8;
+    }
+
+    .op {
+      color: #94a3b8;
+    }
+
+    .cm {
+      color: #64748b;
+      font-style: italic;
+    }
+
+    /* Bottom left instruction / status */
+    .status-panel {
+      position: fixed;
+      bottom: 24px;
+      left: 28px;
+      z-index: 100;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .status-hint {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.55);
+      font-family: 'Fira Code', monospace;
+      letter-spacing: 0.04em;
+    }
+
+    .status-pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.4);
+        opacity: 0.5;
+      }
+    }
+
+    .status-sub {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.25);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    @media (max-width: 768px) {
+      #footer-card {
+        width: calc(100vw - 32px);
+        right: 16px;
+        bottom: 16px;
+        font-size: 11px;
+      }
+
+      .status-panel {
+        display: none;
+      }
+
+      .topbar {
+        left: 16px;
+        right: 16px;
+      }
+    }
+
+    body.reel-mode {
+      --bg: #0c0d12;
+    }
+
+    body.reel-mode #footer-card {
+      position: fixed !important;
+      top: 1300px !important;
+      bottom: auto !important;
+      left: 50% !important;
+      right: auto !important;
+      transform: translateX(-50%) !important;
+      width: 960px !important;
+      height: 480px !important;
+      border-radius: 16px !important;
+      border: 2px solid rgba(255, 255, 255, 0.22) !important;
+      background: rgba(16, 18, 27, 0.94) !important;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8) !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    body.reel-mode .terminal-header {
+      padding: 16px 24px !important;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.08) !important;
+    }
+
+    body.reel-mode .dot {
+      width: 16px !important;
+      height: 16px !important;
+    }
+
+    body.reel-mode .terminal-title {
+      font-size: 18px !important;
+      color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    body.reel-mode .terminal-copy {
+      display: none !important;
+    }
+
+    body.reel-mode .code-body {
+      padding: 20px 30px 22px !important;
+      font-size: 20.5px !important;
+      line-height: 1.72 !important;
+      flex: 1 !important;
+    }
+
+    body.reel-mode .ln {
+      min-width: 30px !important;
+      font-size: 20px !important;
+      margin-right: 14px !important;
+    }
+
+    body.reel-mode #pointer {
+      width: 32px !important;
+      height: 42px !important;
+    }
+
+    body.reel-mode canvas {
+      z-index: 10 !important;
+      pointer-events: none !important;
+    }
+
+    body.reel-mode .topbar,
+    body.reel-mode .status-panel {
+      display: none !important;
+    }
+
+    .reel-top-headline {
+      display: none;
+    }
+
+    body.reel-mode .reel-top-headline {
+      display: flex !important;
+      position: fixed !important;
+      top: 115px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: 960px !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center !important;
+      z-index: 50 !important;
+      pointer-events: none !important;
+    }
+
+    body.reel-mode .reel-headline-badge {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+      padding: 7px 22px !important;
+      border-radius: 999px !important;
+      background: var(--accent-glow, rgba(0, 245, 212, 0.12)) !important;
+      border: 1px solid var(--accent, rgba(0, 245, 212, 0.4)) !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 15px !important;
+      font-weight: 800 !important;
+      letter-spacing: 2.5px !important;
+      text-transform: uppercase !important;
+      color: var(--accent, #00f5d4) !important;
+      margin-bottom: 12px !important;
+      box-shadow: 0 0 20px var(--accent-glow, rgba(0, 245, 212, 0.25)) !important;
+      transition: all 0.4s ease !important;
+    }
+
+    body.reel-mode .reel-headline-badge .badge-dot {
+      width: 9px !important;
+      height: 9px !important;
+      border-radius: 50% !important;
+      background: var(--accent, #00f5d4) !important;
+      box-shadow: 0 0 10px var(--accent, #00f5d4) !important;
+      transition: all 0.4s ease !important;
+    }
+
+    body.reel-mode .reel-headline-title {
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      font-size: 68px !important;
+      font-weight: 900 !important;
+      letter-spacing: -1px !important;
+      line-height: 1.05 !important;
+      margin: 0 !important;
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent, #00f5d4) 80%, #ffffff 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      filter: drop-shadow(0 4px 28px var(--accent-glow, rgba(0, 245, 212, 0.55))) !important;
+      transition: filter 0.4s ease !important;
+    }
+
+    /* Live 3-Theme Switcher Badge for Instagram Reel */
+    body.reel-mode .reel-theme-pill {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 14px !important;
+      margin-top: 14px !important;
+      padding: 9px 24px !important;
+      border-radius: 999px !important;
+      background: rgba(15, 18, 28, 0.9) !important;
+      backdrop-filter: blur(16px) !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+      transition: all 0.4s ease !important;
+    }
+
+    body.reel-mode .theme-pill-label {
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      letter-spacing: 2px !important;
+      color: rgba(255, 255, 255, 0.45) !important;
+    }
+
+    body.reel-mode .theme-pill-sep {
+      width: 1px !important;
+      height: 16px !important;
+      background: rgba(255, 255, 255, 0.18) !important;
+    }
+
+    body.reel-mode .theme-pill-dot {
+      width: 11px !important;
+      height: 11px !important;
+      border-radius: 50% !important;
+      background: var(--accent, #00f5d4) !important;
+      box-shadow: 0 0 14px var(--accent, #00f5d4) !important;
+      transition: background 0.4s ease, box-shadow 0.4s ease !important;
+    }
+
+    body.reel-mode .theme-pill-name {
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 16px !important;
+      font-weight: 800 !important;
+      letter-spacing: 2px !important;
+      color: var(--accent, #00f5d4) !important;
+      transition: color 0.4s ease !important;
+      min-width: 165px !important;
+      text-align: left !important;
+    }
+
+    body.reel-mode .theme-pill-selector {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+    }
+
+    body.reel-mode .pill-color-dot {
+      width: 14px !important;
+      height: 14px !important;
+      border-radius: 50% !important;
+      background: var(--c) !important;
+      opacity: 0.35 !important;
+      transition: all 0.35s ease !important;
+      box-shadow: 0 0 0 2px transparent !important;
+    }
+
+    body.reel-mode .pill-color-dot.active {
+      opacity: 1.0 !important;
+      transform: scale(1.3) !important;
+      box-shadow: 0 0 14px var(--c), 0 0 0 2px rgba(255, 255, 255, 0.85) !important;
+    }
+
+    @media (max-height: 1200px) and (min-width: 900px) {
+      body.reel-mode .reel-top-headline {
+        top: 50px !important;
+      }
+      body.reel-mode .reel-headline-title {
+        font-size: 46px !important;
+      }
+      body.reel-mode .reel-headline-badge {
+        padding: 5px 16px !important;
+        font-size: 13px !important;
+        margin-bottom: 8px !important;
+      }
+      body.reel-mode #footer-card {
+        top: 550px !important;
+        height: 490px !important;
+        width: 880px !important;
+      }
+      body.reel-mode .code-body {
+        padding: 18px 24px !important;
+        font-size: 16px !important;
+        line-height: 1.9 !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-grid"></div>
+
+
+
+  <canvas id="c"></canvas>
+
+  <!-- High-precision hardware-style pointer -->
+  <svg id="pointer" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 2L2 23L7.8 17.2L12.5 28L15.6 26.6L10.8 15.9L19.5 15.9L2 2Z" fill="#ffffff" stroke="#090a0f"
+      stroke-width="1.4" stroke-linejoin="round" />
+  </svg>
+
+  <!-- Hidden marker for automated video recording completion -->
+  <div id="demoComplete" style="display:none;"></div>
+
+  <!-- Top bar controls -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-badge">🦂</div>
+      <div>
+        SCORPIO
+        <span class="brand-sub">Kinematics v2.0</span>
+      </div>
+    </div>
+
+    <div class="controls-group">
+      <!-- Demo run button -->
+      <button class="btn-toggle" id="btnDemo" title="Play Choreographed Feature Demo">
+        ▶ Demo
+      </button>
+
+      <!-- Color themes -->
+      <div class="theme-picker" title="Change Bio-Luminescence Theme">
+        <button class="theme-btn active" data-theme="cyan" style="background:#00f5d4;" title="Cyber Cyan"></button>
+        <button class="theme-btn" data-theme="amber" style="background:#ff9e00;" title="Venom Amber"></button>
+        <button class="theme-btn" data-theme="white" style="background:#e2e8f0;" title="Skeletal Silver"></button>
+        <button class="theme-btn" data-theme="emerald" style="background:#10b981;" title="Matrix Green"></button>
+        <button class="theme-btn" data-theme="violet" style="background:#a855f7;" title="Phantom Violet"></button>
+      </div>
+
+
+
+      <!-- Strike trigger button -->
+      <button class="btn-toggle" id="btnStrike">
+        ⚡ Strike
+      </button>
+    </div>
+  </div>
+
+  <!-- Status indicator -->
+  <div class="status-panel">
+    <div class="status-hint">
+      <span class="status-pulse"></span>
+      <span>Click to whip strike & snap claws</span>
+    </div>
+    <div class="status-sub">Inverse Kinematics • 28 Vertebrae • 8 Legs</div>
+  </div>
+
+  <!-- Instagram Reel Top Headline with Live 3-Theme Switcher -->
+  <div class="reel-top-headline">
+    <div class="reel-headline-badge">
+      <div class="badge-dot"></div>
+      <span>INVERSE KINEMATICS</span>
+    </div>
+    <h1 class="reel-headline-title">Scorpio Cursor</h1>
+    <!-- Floating Live 3-Theme Indicator -->
+    <div class="reel-theme-pill" id="reelThemePill">
+      <span class="theme-pill-label">THEME</span>
+      <div class="theme-pill-sep"></div>
+      <div class="theme-pill-dot" id="reelThemeDot"></div>
+      <span class="theme-pill-name" id="reelThemeName">CYBER CYAN</span>
+      <div class="theme-pill-sep"></div>
+      <div class="theme-pill-selector">
+        <span class="pill-color-dot active" data-theme="cyan" style="--c:#00f5d4;" title="Cyber Cyan"></span>
+        <span class="pill-color-dot" data-theme="amber" style="--c:#ff9e00;" title="Venom Amber"></span>
+        <span class="pill-color-dot" data-theme="violet" style="--c:#a855f7;" title="Phantom Violet"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- macOS Style Interactive Code Snippet Card -->
+  <div id="footer-card">
+    <div class="terminal-header">
+      <div class="terminal-dots">
+        <span class="dot red" title="Close"></span>
+        <span class="dot yellow" title="Minimize"></span>
+        <span class="dot green" title="Maximize"></span>
+      </div>
+      <span class="terminal-title">scorpio-cursor.js</span>
+      <button class="terminal-copy" id="btnCopy" title="Copy snippet">Copy</button>
+    </div>
+    <div class="code-body">
+      <div class="code-row"><span class="ln">1</span><span><span class="kw">document</span><span
+            class="op">.</span><span class="fn">addEventListener</span><span class="op">(</span><span
+            class="str">"mouseup"</span><span class="op">,</span> <span class="kw">function</span><span
+            class="op">(</span><span class="var">event</span><span class="op">) {</span></span></div>
+      <div class="code-row"><span class="ln">2</span><span>&nbsp;&nbsp;<span class="kw">if</span> <span
+            class="op">((</span><span class="var">event</span><span class="op">.</span><span class="var">button</span>
+          <span class="op">===</span> <span class="num">0</span><span class="op">)) {</span></span></div>
+      <div class="code-row"><span class="ln">3</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">Input</span><span
+            class="op">.</span><span class="var">mouse</span><span class="op">.</span><span class="var">left</span>
+          <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span></div>
+      <div class="code-row"><span class="ln">4</span><span>&nbsp;&nbsp;<span class="op">}</span></span></div>
+      <div class="code-row"><span class="ln">5</span><span>&nbsp;&nbsp;<span class="kw">if</span> <span
+            class="op">((</span><span class="var">event</span><span class="op">.</span><span class="var">button</span>
+          <span class="op">===</span> <span class="num">1</span><span class="op">)) {</span></span></div>
+      <div class="code-row"><span class="ln">6</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">Input</span><span
+            class="op">.</span><span class="var">mouse</span><span class="op">.</span><span class="var">middle</span>
+          <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span></div>
+      <div class="code-row"><span class="ln">7</span><span>&nbsp;&nbsp;<span class="op">}</span></span></div>
+      <div class="code-row"><span class="ln">8</span><span>&nbsp;&nbsp;<span class="kw">if</span> <span
+            class="op">((</span><span class="var">event</span><span class="op">.</span><span class="var">button</span>
+          <span class="op">===</span> <span class="num">2</span><span class="op">)) {</span></span></div>
+      <div class="code-row"><span class="ln">9</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">Input</span><span
+            class="op">.</span><span class="var">mouse</span><span class="op">.</span><span class="var">right</span>
+          <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span></div>
+      <div class="code-row"><span class="ln">10</span><span>&nbsp;&nbsp;<span class="op">}</span></span></div>
+      <div class="code-row"><span class="ln">11</span><span><span class="op">});</span> <span class="cm">// 🦂 Live
+            Kinematics</span></span></div>
+    </div>
+  </div>
+
+  <script>
+    /* ========================================================
+       THEMES CONFIGURATION
+    ======================================================== */
+    const THEMES = {
+      cyan: {
+        primary: 'rgb(0, 245, 212)',
+        primaryAlpha: (a) => `rgba(0, 245, 212, ${a})`,
+        glow: 'rgba(0, 245, 212, 0.4)',
+        ribStroke: (a) => `rgba(180, 250, 245, ${a})`,
+        boneFill: (a) => `rgba(0, 245, 212, ${a})`,
+        venomGlow: '#00f5d4',
+        eyeColor: '#00f5d4'
+      },
+      amber: {
+        primary: 'rgb(255, 158, 0)',
+        primaryAlpha: (a) => `rgba(255, 158, 0, ${a})`,
+        glow: 'rgba(255, 158, 0, 0.45)',
+        ribStroke: (a) => `rgba(255, 215, 150, ${a})`,
+        boneFill: (a) => `rgba(255, 158, 0, ${a})`,
+        venomGlow: '#ffaa00',
+        eyeColor: '#ffdd00'
+      },
+      white: {
+        primary: 'rgb(226, 232, 240)',
+        primaryAlpha: (a) => `rgba(226, 232, 240, ${a})`,
+        glow: 'rgba(255, 255, 255, 0.35)',
+        ribStroke: (a) => `rgba(240, 245, 255, ${a})`,
+        boneFill: (a) => `rgba(200, 210, 230, ${a})`,
+        venomGlow: '#ffffff',
+        eyeColor: '#ffffff'
+      },
+      emerald: {
+        primary: 'rgb(16, 185, 129)',
+        primaryAlpha: (a) => `rgba(16, 185, 129, ${a})`,
+        glow: 'rgba(16, 185, 129, 0.4)',
+        ribStroke: (a) => `rgba(167, 243, 208, ${a})`,
+        boneFill: (a) => `rgba(16, 185, 129, ${a})`,
+        venomGlow: '#34d399',
+        eyeColor: '#6ee7b7'
+      },
+      violet: {
+        primary: 'rgb(168, 85, 247)',
+        primaryAlpha: (a) => `rgba(168, 85, 247, ${a})`,
+        glow: 'rgba(168, 85, 247, 0.4)',
+        ribStroke: (a) => `rgba(233, 213, 255, ${a})`,
+        boneFill: (a) => `rgba(168, 85, 247, ${a})`,
+        venomGlow: '#c084fc',
+        eyeColor: '#f472b6'
+      }
+    };
+
+    let currentThemeName = 'cyan';
+    let currentTheme = THEMES[currentThemeName];
+
+    /* ========================================================
+       POINTER LOGIC (Zero-lag hardware tracking)
+    ======================================================== */
+    const ptr = document.getElementById('pointer');
+    /* Instagram Reel format detection */
+    const isReel = window.location.search.includes('reel') || (window.innerHeight >= 1400 && window.innerWidth <= 1200);
+    if (isReel) document.body.classList.add('reel-mode');
+
+    const SCORPIO_SCALE = isReel ? 1.65 : 1.0;
+    const initialX = isReel ? 540 : window.innerWidth * 0.45;
+    const initialY = isReel ? 370 : window.innerHeight * 0.45;
+
+    const mouse = { x: initialX, y: initialY, px: initialX, py: initialY, speed: 0 };
+    ptr.style.left = initialX + 'px';
+    ptr.style.top = initialY + 'px';
+
+    document.addEventListener('mousemove', e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      ptr.style.left = e.clientX + 'px';
+      ptr.style.top = e.clientY + 'px';
+    });
+
+    document.addEventListener('mousedown', () => {
+      ptr.classList.add('clicking');
+      triggerStrike();
+    });
+    document.addEventListener('mouseup', () => {
+      ptr.classList.remove('clicking');
+    });
+
+    /* ========================================================
+       CANVAS SETUP & RESIZE
+    ======================================================== */
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    });
+
+    /* ========================================================
+       SCORPIO KINEMATICS & INVERSE KINEMATICS ENGINE
+    ======================================================== */
+    const N = 28;                         // Total vertebral joints
+    const SEG_LEN = 13.5 * SCORPIO_SCALE; // Distance between vertebrae
+    const SMOOTH = isReel ? 0.15 : 0.14;
+
+    // Initialize joints matching frame-0 rest posture facing the pointer
+    const headInitX = isReel ? 405 : initialX - 95;
+    const headInitY = isReel ? 370 : initialY;
+    const initHeading = Math.atan2(initialY - headInitY, initialX - headInitX);
+
+    const joints = Array.from({ length: N }, (_, i) => ({
+      x: headInitX - Math.cos(initHeading) * i * (SEG_LEN * 0.85),
+      y: headInitY - Math.sin(initHeading) * i * (SEG_LEN * 0.85) + Math.sin(i * 0.25) * 4,
+      angle: initHeading,
+      speed: 0,
+      vx: 0,
+      vy: 0
+    }));
+
+    // 8 Walking legs (4 on left, 4 on right) with Planted Inverse Kinematics Gait
+    const LEG_ATTACH_JOINTS = [3, 5, 7, 9];
+    const legs = [];
+
+    for (let pair = 0; pair < 4; pair++) {
+      for (const side of [1, -1]) {
+        const jIdx = LEG_ATTACH_JOINTS[pair];
+        const j = joints[jIdx];
+        const initSpread = (32 + pair * 7) * SCORPIO_SCALE;
+        const initForward = (1.5 - pair) * 10 * SCORPIO_SCALE;
+        const initialTipX = j.x + side * initSpread;
+        const initialTipY = j.y + 15 + pair * 10;
+
+        legs.push({
+          jointIdx: jIdx,
+          side: side, // 1: right, -1: left
+          pair: pair,
+          tipX: initialTipX,
+          tipY: initialTipY,
+          kneeX: initialTipX,
+          kneeY: initialTipY,
+          targetX: initialTipX,
+          targetY: initialTipY,
+          stepProgress: 1.0,
+          isStepping: false,
+          group: (pair % 2 === 0 ? (side > 0 ? 0 : 1) : (side > 0 ? 1 : 0))
+        });
+      }
+    }
+
+    // Strike / Claw attack state
+    let strikeProgress = 0;
+    let isStriking = false;
+    let shockwaves = [];
+    let particles = [];
+    let walkPhase = 0;
+    let gaitTimer = 0;
+
+    function triggerStrike() {
+      isStriking = true;
+      strikeProgress = 1.0;
+
+      // Create shockwave ring at stinger / head
+      shockwaves.push({
+        x: joints[0].x,
+        y: joints[0].y,
+        r: 6,
+        maxR: 90,
+        alpha: 1.0,
+        color: currentTheme.primary
+      });
+
+      // Spawn venom / stardust particles
+      for (let i = 0; i < 18; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const spd = Math.random() * 4.5 + 1.5;
+        particles.push({
+          x: joints[0].x,
+          y: joints[0].y,
+          vx: Math.cos(ang) * spd,
+          vy: Math.sin(ang) * spd,
+          life: 1.0,
+          decay: Math.random() * 0.035 + 0.02,
+          size: Math.random() * 2.8 + 1.2
+        });
+      }
+    }
+
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    function updateKinematics() {
+      // Calculate mouse speed for reactive animation
+      const mdx = mouse.x - mouse.px;
+      const mdy = mouse.y - mouse.py;
+      mouse.speed = lerp(mouse.speed, Math.hypot(mdx, mdy), 0.28);
+      mouse.px = mouse.x;
+      mouse.py = mouse.y;
+
+      // Strike timer decay
+      if (isStriking) {
+        strikeProgress -= 0.055;
+        if (strikeProgress <= 0) {
+          strikeProgress = 0;
+          isStriking = false;
+        }
+      }
+
+      // 1. DIRECTIONAL STEERING & RESPONSIVE FOLLOW (Smooth, Fluid, Zero Lag)
+      const head = joints[0];
+      const toMouseX = mouse.x - head.x;
+      const toMouseY = mouse.y - head.y;
+      const targetAngle = Math.atan2(toMouseY, toMouseX);
+
+      // Smooth angular ease towards mouse heading (prevents instant snap, creates silky curves)
+      let diff = targetAngle - head.angle;
+      while (diff < -Math.PI) diff += Math.PI * 2;
+      while (diff > Math.PI) diff -= Math.PI * 2;
+      head.angle += diff * (isReel ? 0.38 : 0.28);
+
+      // Separation gap: maintains 135px spacing (claws extend ~90px, leaving ~45px clear air)
+      const followGap = isReel ? 135 : 95;
+      const minSafeGap = isReel ? 115 : 82;
+
+      // Target position maintaining followGap behind mouse along current line of sight
+      const targetHeadX = mouse.x - Math.cos(targetAngle) * followGap;
+      const targetHeadY = mouse.y - Math.sin(targetAngle) * followGap;
+
+      // Store previous head position to measure actual translation speed
+      const prevHeadX = head.x;
+      const prevHeadY = head.y;
+
+      // Responsive follow lerp: moves TOGETHER with the pointer across the screen with zero lag!
+      const followEase = isReel ? 0.36 : 0.28;
+      head.x = lerp(head.x, targetHeadX, followEase);
+      head.y = lerp(head.y, targetHeadY, followEase);
+
+      // Strict radial safety boundary: Scorpio claws NEVER touch or overlap the pointer
+      const curDist = Math.hypot(head.x - mouse.x, head.y - mouse.y) || 0.001;
+      if (curDist < minSafeGap) {
+        const pushX = (head.x - mouse.x) / curDist;
+        const pushY = (head.y - mouse.y) / curDist;
+        head.x = mouse.x + pushX * minSafeGap;
+        head.y = mouse.y + pushY * minSafeGap;
+      }
+
+      const moveSpeed = Math.hypot(head.x - prevHeadX, head.y - prevHeadY);
+      head.speed = moveSpeed;
+
+      // 2. FORWARD-DRAG CHAIN KINEMATICS WITH VERTEBRA ANGLES (100% Jitter-Free)
+      for (let i = 1; i < N; i++) {
+        const prev = joints[i - 1];
+        const curr = joints[i];
+        const dx = curr.x - prev.x;
+        const dy = curr.y - prev.y;
+        const d = Math.hypot(dx, dy) || 0.001;
+        const segmentDist = i < 11 ? SEG_LEN : (SEG_LEN * (1 - (i - 11) / (N * 2.2)));
+
+        curr.x = prev.x + (dx / d) * segmentDist;
+        curr.y = prev.y + (dy / d) * segmentDist;
+        curr.angle = Math.atan2(prev.y - curr.y, prev.x - curr.x);
+      }
+
+      // 3. ORGANIC REPTILIAN / ARACHNID LATERAL SLITHER UNDULATION
+      if (moveSpeed > 0.15) {
+        walkPhase += moveSpeed * 0.045;
+        for (let i = 2; i < N - 4; i++) {
+          const segPerp = (joints[i].angle || 0) + Math.PI / 2;
+          const bodyEnvelope = Math.sin((i / N) * Math.PI);
+          const lateralWiggle = Math.sin(walkPhase - i * 0.32) * (1.8 * SCORPIO_SCALE * bodyEnvelope);
+          joints[i].x += Math.cos(segPerp) * lateralWiggle * 0.14;
+          joints[i].y += Math.sin(segPerp) * lateralWiggle * 0.14;
+        }
+      }
+
+      // 4. AUTHENTIC PLANTED STEPPING LIMB SYSTEM (Inverse Kinematics Gait)
+      gaitTimer += moveSpeed * 0.05 + 0.01;
+      const activeGroup = Math.floor(gaitTimer) % 2;
+
+      legs.forEach((leg) => {
+        const hip = joints[leg.jointIdx];
+        const spineAngle = hip.angle || head.angle;
+        const perp = spineAngle + (Math.PI / 2) * leg.side;
+
+        const lateralSpread = (32 + leg.pair * 7) * SCORPIO_SCALE;
+        const forwardOffset = (1.4 - leg.pair) * (10 * SCORPIO_SCALE);
+
+        // Ideal footprint position relative to current body pose
+        const idealX = hip.x + Math.cos(perp) * lateralSpread + Math.cos(spineAngle) * forwardOffset;
+        const idealY = hip.y + Math.sin(perp) * lateralSpread + Math.sin(spineAngle) * forwardOffset;
+
+        const stepThreshold = (28 + leg.pair * 4) * SCORPIO_SCALE;
+        const distFromIdeal = Math.hypot(leg.tipX - idealX, leg.tipY - idealY);
+
+        // Trigger step when foot is stretched too far AND leg group is active
+        if (!leg.isStepping && distFromIdeal > stepThreshold && (leg.group === activeGroup || distFromIdeal > stepThreshold * 1.35)) {
+          leg.isStepping = true;
+          leg.stepProgress = 0;
+          // Step ahead of ideal position along velocity vector so it stays planted longer
+          const strideAdvance = Math.min(24 * SCORPIO_SCALE, moveSpeed * 3.5);
+          leg.targetX = idealX + Math.cos(spineAngle) * strideAdvance;
+          leg.targetY = idealY + Math.sin(spineAngle) * strideAdvance;
+        }
+
+        if (leg.isStepping) {
+          leg.stepProgress += isReel ? 0.26 : 0.22;
+          if (leg.stepProgress >= 1.0) {
+            leg.stepProgress = 1.0;
+            leg.isStepping = false;
+            leg.tipX = leg.targetX;
+            leg.tipY = leg.targetY;
+          } else {
+            leg.tipX = lerp(leg.tipX, leg.targetX, isReel ? 0.48 : 0.42);
+            leg.tipY = lerp(leg.tipY, leg.targetY, isReel ? 0.48 : 0.42);
+          }
+        }
+
+        // Two-bone Inverse Kinematics for Knee joint:
+        const l1 = (18 + leg.pair * 2) * SCORPIO_SCALE;
+        const l2 = (21 + leg.pair * 2) * SCORPIO_SCALE;
+        const fx = leg.tipX - hip.x;
+        const fy = leg.tipY - hip.y;
+        const fDist = Math.hypot(fx, fy) || 0.001;
+        const baseDir = Math.atan2(fy, fx);
+
+        // Law of cosines for knee angle
+        const clampedDist = Math.min(fDist, l1 + l2 - 0.5);
+        const cosKnee = (l1 * l1 + clampedDist * clampedDist - l2 * l2) / (2 * l1 * clampedDist);
+        const kneeOffsetAngle = Math.acos(Math.max(-1, Math.min(1, cosKnee))) * -leg.side;
+
+        leg.kneeX = hip.x + Math.cos(baseDir + kneeOffsetAngle) * l1;
+        leg.kneeY = hip.y + Math.sin(baseDir + kneeOffsetAngle) * l1;
+      });
+
+      // Update Shockwaves
+      for (let i = shockwaves.length - 1; i >= 0; i--) {
+        const sw = shockwaves[i];
+        sw.r += 3.8;
+        sw.alpha -= 0.038;
+        if (sw.alpha <= 0) shockwaves.splice(i, 1);
+      }
+
+      // Update Particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.94;
+        p.vy *= 0.94;
+        p.life -= p.decay;
+        if (p.life <= 0) particles.splice(i, 1);
+      }
+    }
+
+    /* ========================================================
+       RENDERING: SKELETAL SCORPION & BIOLUMINESCENCE
+    ======================================================== */
+
+    // 1. Draw 8 jointed crawling legs
+    function renderLegs() {
+      legs.forEach((leg) => {
+        const j = joints[leg.jointIdx];
+
+        ctx.beginPath();
+        ctx.moveTo(j.x, j.y);
+        ctx.lineTo(leg.kneeX, leg.kneeY);
+        ctx.lineTo(leg.tipX, leg.tipY);
+
+        ctx.strokeStyle = currentTheme.primaryAlpha(0.65);
+        ctx.lineWidth = 1.35;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+
+        // Joint knuckle dots
+        ctx.beginPath();
+        ctx.arc(leg.kneeX, leg.kneeY, 1.8, 0, Math.PI * 2);
+        ctx.fillStyle = currentTheme.primaryAlpha(0.9);
+        ctx.fill();
+
+        // Sharp claw tip
+        ctx.beginPath();
+        ctx.arc(leg.tipX, leg.tipY, 1.2, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+      });
+    }
+
+    // 2. Draw Exoskeleton Ribcage & Fan Spines (Signature viral look)
+    function renderRibcageAndSpines() {
+      // Connect outer rib tips with organic exoskeleton contour
+      const leftContour = [];
+      const rightContour = [];
+
+      for (let i = 1; i < 14; i++) {
+        const curr = joints[i];
+        const next = joints[Math.min(N - 1, i + 1)];
+        const prev = joints[Math.max(0, i - 1)];
+        const segAngle = Math.atan2(prev.y - next.y, prev.x - next.x);
+        const perp = segAngle + Math.PI / 2;
+
+        // Abdomen width profile: tapers from head, swells in thorax, narrows to tail
+        const t = (i - 1) / 12;
+        const ribWidth = (Math.sin(t * Math.PI) * 25 + 7.5) * SCORPIO_SCALE;
+        const sweepAngle = (t - 0.5) * 0.45; // Backward curve
+
+        // Number of skeletal spine fans per rib
+        const spineCount = Math.round(lerp(5, 3, t));
+
+        for (const side of [1, -1]) {
+          const ribBaseAngle = perp * side;
+          const tipX = curr.x + Math.cos(perp * side + sweepAngle) * ribWidth;
+          const tipY = curr.y + Math.sin(perp * side + sweepAngle) * ribWidth;
+
+          if (side > 0) rightContour.push({ x: tipX, y: tipY });
+          else leftContour.push({ x: tipX, y: tipY });
+
+          // Primary curved rib
+          ctx.beginPath();
+          ctx.moveTo(curr.x, curr.y);
+          // Control point creates natural arachnid arch
+          const cpx = curr.x + Math.cos(perp * side) * (ribWidth * 0.6);
+          const cpy = curr.y + Math.sin(perp * side) * (ribWidth * 0.6);
+          ctx.quadraticCurveTo(cpx, cpy, tipX, tipY);
+
+          ctx.strokeStyle = currentTheme.ribStroke(lerp(0.85, 0.35, t));
+          ctx.lineWidth = lerp(1.5, 0.8, t);
+          ctx.stroke();
+
+          // Splayed spine fan rays from rib tip (exact TikTok spine fan effect)
+          for (let s = 1; s <= spineCount; s++) {
+            const frac = s / spineCount;
+            const rayLen = ribWidth * (0.35 + Math.sin(frac * Math.PI) * 0.3);
+            const rayAng = perp * side + sweepAngle + (frac - 0.5) * 1.1;
+
+            ctx.beginPath();
+            ctx.moveTo(tipX, tipY);
+            ctx.lineTo(tipX + Math.cos(rayAng) * rayLen, tipY + Math.sin(rayAng) * rayLen);
+            ctx.strokeStyle = currentTheme.primaryAlpha(lerp(0.5, 0.15, t));
+            ctx.lineWidth = 0.7;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Subtle translucent exoskeleton body shell
+      if (leftContour.length > 0 && rightContour.length > 0) {
+        ctx.beginPath();
+        ctx.moveTo(joints[0].x, joints[0].y);
+        for (const pt of rightContour) ctx.lineTo(pt.x, pt.y);
+        ctx.lineTo(joints[14].x, joints[14].y);
+        for (let k = leftContour.length - 1; k >= 0; k--) ctx.lineTo(leftContour[k].x, leftContour[k].y);
+        ctx.closePath();
+
+        const shellGrad = ctx.createLinearGradient(joints[0].x, joints[0].y, joints[14].x, joints[14].y);
+        shellGrad.addColorStop(0, currentTheme.primaryAlpha(0.12));
+        shellGrad.addColorStop(1, currentTheme.primaryAlpha(0.02));
+        ctx.fillStyle = shellGrad;
+        ctx.fill();
+        ctx.strokeStyle = currentTheme.primaryAlpha(0.25);
+        ctx.lineWidth = 0.75;
+        ctx.stroke();
+      }
+    }
+
+    // 3. Draw Metasoma (Tapering tail vertebrae with backward chevron spines)
+    function renderTail() {
+      for (let i = 13; i < N - 1; i++) {
+        const curr = joints[i];
+        const next = joints[i + 1];
+        const segAngle = Math.atan2(curr.y - next.y, curr.x - next.x);
+        const t = (i - 13) / (N - 14);
+
+        // Tail vertebrae segment tube
+        const r1 = lerp(4.8, 1.6, t);
+        const r2 = lerp(4.8, 1.6, Math.min(1, (i - 12) / (N - 14)));
+        const perp = segAngle + Math.PI / 2;
+
+        ctx.beginPath();
+        ctx.moveTo(curr.x + Math.cos(perp) * r1, curr.y + Math.sin(perp) * r1);
+        ctx.lineTo(next.x + Math.cos(perp) * r2, next.y + Math.sin(perp) * r2);
+        ctx.lineTo(next.x - Math.cos(perp) * r2, next.y - Math.sin(perp) * r2);
+        ctx.lineTo(curr.x - Math.cos(perp) * r1, curr.y - Math.sin(perp) * r1);
+        ctx.closePath();
+
+        ctx.fillStyle = currentTheme.primaryAlpha(lerp(0.3, 0.08, t));
+        ctx.fill();
+        ctx.strokeStyle = currentTheme.ribStroke(lerp(0.65, 0.25, t));
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+
+        // Chevron-angled tail spines (> > >)
+        const spineLen = lerp(16, 6, t) * SCORPIO_SCALE;
+        const chevronAngle = 0.55; // Angle pointed backward
+
+        for (const side of [1, -1]) {
+          const spAngle = segAngle + (Math.PI - chevronAngle) * side;
+          ctx.beginPath();
+          ctx.moveTo(curr.x, curr.y);
+          ctx.lineTo(curr.x + Math.cos(spAngle) * spineLen, curr.y + Math.sin(spAngle) * spineLen);
+          ctx.strokeStyle = currentTheme.primaryAlpha(lerp(0.7, 0.2, t));
+          ctx.lineWidth = lerp(1.2, 0.6, t);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // 4. Draw Stinger (Curved needle telson with venom bead glow)
+    function renderStinger() {
+      const tipJoint = joints[N - 1];
+      const prevJoint = joints[N - 2];
+      const tailAngle = Math.atan2(tipJoint.y - prevJoint.y, tipJoint.x - prevJoint.x);
+
+      // Dynamic arch curl
+      const strikeBonus = isStriking ? strikeProgress * 0.8 : 0;
+      const curl = Math.PI * (0.62 + strikeBonus);
+      const stingerLen = (32 + (isStriking ? strikeProgress * 14 : 0)) * SCORPIO_SCALE;
+
+      // Curved Bezier needle
+      const cp1x = tipJoint.x + Math.cos(tailAngle + curl * 0.45) * stingerLen * 0.6;
+      const cp1y = tipJoint.y + Math.sin(tailAngle + curl * 0.45) * stingerLen * 0.6;
+      const cp2x = tipJoint.x + Math.cos(tailAngle + curl * 0.85) * stingerLen;
+      const cp2y = tipJoint.y + Math.sin(tailAngle + curl * 0.85) * stingerLen;
+      const barbX = tipJoint.x + Math.cos(tailAngle + curl) * stingerLen * 1.15;
+      const barbY = tipJoint.y + Math.sin(tailAngle + curl) * stingerLen * 1.15;
+
+      ctx.beginPath();
+      ctx.moveTo(tipJoint.x, tipJoint.y);
+      ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, barbX, barbY);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.8 * SCORPIO_SCALE;
+      ctx.stroke();
+
+      // Bulbous venom gland (Telson base)
+      ctx.beginPath();
+      ctx.arc(tipJoint.x, tipJoint.y, 3.2 * SCORPIO_SCALE, 0, Math.PI * 2);
+      ctx.fillStyle = currentTheme.primary;
+      ctx.fill();
+
+      // Pulsing venom drop glow at the tip
+      const venomPulse = (Math.sin(Date.now() * 0.008) * 2 + 6 + (isStriking ? 6 : 0)) * SCORPIO_SCALE;
+      const glowGrad = ctx.createRadialGradient(barbX, barbY, 0, barbX, barbY, venomPulse * 2.2);
+      glowGrad.addColorStop(0, '#ffffff');
+      glowGrad.addColorStop(0.35, currentTheme.venomGlow);
+      glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+
+      ctx.beginPath();
+      ctx.arc(barbX, barbY, venomPulse * 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = glowGrad;
+      ctx.fill();
+
+      // Tiny white needle core
+      ctx.beginPath();
+      ctx.arc(barbX, barbY, 1.4 * SCORPIO_SCALE, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+    }
+
+    // 5. Draw Scorpio Head & Giant Pedipalp Pincers
+    function renderScorpionHead() {
+      const hx = joints[0].x;
+      const hy = joints[0].y;
+      const headAngle = (joints[0].angle !== undefined) ? joints[0].angle : Math.atan2(joints[0].y - joints[2].y, joints[0].x - joints[2].x);
+
+      ctx.save();
+      ctx.translate(hx, hy);
+      ctx.rotate(headAngle);
+
+      const S = 0.82 * SCORPIO_SCALE; // Sleek scale factor
+      ctx.scale(S, S);
+
+      // Carapace plate (Hexagonal sculpted chitin shield)
+      ctx.beginPath();
+      ctx.moveTo(18, 0);
+      ctx.lineTo(12, 12);
+      ctx.lineTo(-2, 14);
+      ctx.lineTo(-14, 8);
+      ctx.lineTo(-16, 0);
+      ctx.lineTo(-14, -8);
+      ctx.lineTo(-2, -14);
+      ctx.lineTo(12, -12);
+      ctx.closePath();
+
+      const carGrad = ctx.createRadialGradient(2, 0, 1, 2, 0, 18);
+      carGrad.addColorStop(0, 'rgba(28, 32, 46, 0.95)');
+      carGrad.addColorStop(0.8, 'rgba(14, 16, 25, 0.98)');
+      carGrad.addColorStop(1, 'rgba(8, 9, 14, 0.98)');
+
+      ctx.fillStyle = carGrad;
+      ctx.fill();
+      ctx.strokeStyle = currentTheme.primaryAlpha(0.7);
+      ctx.lineWidth = 1.4;
+      ctx.stroke();
+
+      // Carapace dorsal ridges
+      ctx.strokeStyle = currentTheme.primaryAlpha(0.2);
+      ctx.lineWidth = 0.9;
+      [-5, 0, 5].forEach((oy) => {
+        ctx.beginPath();
+        ctx.moveTo(-10, oy);
+        ctx.lineTo(13, oy * 0.3);
+        ctx.stroke();
+      });
+
+      // Bioluminescent Scorpio Eyes (2 median ocelli + 4 lateral eye spots)
+      [
+        { x: 10, y: 3.5, r: 2.2, main: true },
+        { x: 10, y: -3.5, r: 2.2, main: true },
+        { x: 5, y: 8.5, r: 1.3, main: false },
+        { x: 5, y: -8.5, r: 1.3, main: false },
+        { x: 0, y: 11, r: 1.0, main: false },
+        { x: 0, y: -11, r: 1.0, main: false }
+      ].forEach((eye) => {
+        // Soft aura
+        const eg = ctx.createRadialGradient(eye.x, eye.y, 0, eye.x, eye.y, eye.r + 3.5);
+        eg.addColorStop(0, currentTheme.primaryAlpha(0.65));
+        eg.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.beginPath();
+        ctx.arc(eye.x, eye.y, eye.r + 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = eg;
+        ctx.fill();
+
+        // Eye core
+        ctx.beginPath();
+        ctx.arc(eye.x, eye.y, eye.r, 0, Math.PI * 2);
+        ctx.fillStyle = eye.main ? '#ffffff' : currentTheme.eyeColor;
+        ctx.fill();
+      });
+
+      // Chelicerae (mouth pincers)
+      for (const side of [1, -1]) {
+        const cy = side * 2.8;
+        ctx.beginPath();
+        ctx.moveTo(17, cy);
+        ctx.lineTo(24, cy + side * 1.5);
+        ctx.lineTo(28, cy - side * 0.5);
+        ctx.strokeStyle = currentTheme.primaryAlpha(0.85);
+        ctx.lineWidth = 1.1;
+        ctx.stroke();
+      }
+
+      // PEDIPALP CLAWS (Iconic forward pincers with snap kinematics)
+      // Claws open wide when moving fast or snapping on strike!
+      const clawOpen = (isStriking ? (1 - strikeProgress) * 0.55 : Math.min(mouse.speed * 0.04, 0.45)) + 0.22;
+
+      for (const side of [1, -1]) {
+        // Articulated segments: Humerus -> Tibia -> Palm/Chela
+        const shX = 6, shY = side * 11;
+        const elX = 14, elY = side * 26;
+        const wrX = 26, wrY = side * 28;
+
+        // Arm bones
+        ctx.beginPath();
+        ctx.moveTo(shX, shY);
+        ctx.lineTo(elX, elY);
+        ctx.lineTo(wrX, wrY);
+        ctx.strokeStyle = currentTheme.primaryAlpha(0.85);
+        ctx.lineWidth = 2.2;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        // Elbow knuckle dot
+        ctx.beginPath();
+        ctx.arc(elX, elY, 2.2, 0, Math.PI * 2);
+        ctx.arc(wrX, wrY, 2.4, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+
+        const baseClawAngle = Math.atan2(wrY - elY, wrX - elX);
+
+        // Fixed outer finger
+        const outerAng = baseClawAngle + side * (0.35 + clawOpen);
+        const outLen = 16;
+        const ox = wrX + Math.cos(outerAng) * outLen;
+        const oy = wrY + Math.sin(outerAng) * outLen;
+
+        ctx.beginPath();
+        ctx.moveTo(wrX, wrY);
+        ctx.lineTo(ox, oy);
+        // Inward curved tooth
+        ctx.lineTo(ox + Math.cos(outerAng - side * 0.9) * 6, oy + Math.sin(outerAng - side * 0.9) * 6);
+        ctx.strokeStyle = currentTheme.primaryAlpha(0.95);
+        ctx.lineWidth = 1.7;
+        ctx.stroke();
+
+        // Movable inner finger (Dactylus)
+        const innerAng = baseClawAngle - side * (0.2 + clawOpen * 0.7);
+        const inLen = 14;
+        const ix = wrX + Math.cos(innerAng) * inLen;
+        const iy = wrY + Math.sin(innerAng) * inLen;
+
+        ctx.beginPath();
+        ctx.moveTo(wrX, wrY);
+        ctx.lineTo(ix, iy);
+        ctx.lineTo(ix + Math.cos(innerAng + side * 0.8) * 5, iy + Math.sin(innerAng + side * 0.8) * 5);
+        ctx.strokeStyle = currentTheme.primaryAlpha(0.95);
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Signature 3-pronged skeletal sensory rays at claw tips (from the viral video!)
+        [-0.45, 0, 0.45].forEach((offset) => {
+          ctx.beginPath();
+          ctx.moveTo(ox, oy);
+          ctx.lineTo(ox + Math.cos(outerAng + offset) * 7, oy + Math.sin(outerAng + offset) * 7);
+          ctx.strokeStyle = currentTheme.primaryAlpha(0.5);
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        });
+      }
+
+      ctx.restore();
+    }
+
+    // 6. Draw central glowing spinal cord along vertebrae
+    function renderSpinalCord() {
+      ctx.beginPath();
+      ctx.moveTo(joints[0].x, joints[0].y);
+      for (let i = 1; i < N; i++) {
+        ctx.lineTo(joints[i].x, joints[i].y);
+      }
+      ctx.strokeStyle = currentTheme.primaryAlpha(0.45);
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+
+      // Vertebrae nodes
+      for (let i = 0; i < N; i += 2) {
+        const j = joints[i];
+        const r = i < 12 ? 2.2 : lerp(2.0, 0.8, (i - 12) / (N - 12));
+        ctx.beginPath();
+        ctx.arc(j.x, j.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+      }
+    }
+
+    // 7. Render dynamic shockwaves and particles
+    function renderEffects() {
+      // Shockwaves
+      shockwaves.forEach((sw) => {
+        ctx.beginPath();
+        ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2);
+        ctx.strokeStyle = currentTheme.primaryAlpha(sw.alpha);
+        ctx.lineWidth = 2.2;
+        ctx.stroke();
+      });
+
+      // Particles
+      particles.forEach((p) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+        ctx.fillStyle = currentTheme.primaryAlpha(p.life);
+        ctx.fill();
+      });
+    }
+
+    /* ========================================================
+       MAIN ANIMATION LOOP
+    ======================================================== */
+    function animate() {
+      ctx.clearRect(0, 0, W, H);
+
+      updateKinematics();
+
+      // Render layers from background to foreground
+      renderEffects();
+      renderLegs();
+      renderTail();
+      renderRibcageAndSpines();
+      renderSpinalCord();
+      renderStinger();
+      renderScorpionHead();
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    /* ========================================================
+       UI CONTROLS & INTERACTION
+    ======================================================== */
+    // Universal theme switching
+    window.switchTheme = function (themeName) {
+      if (!THEMES[themeName]) return;
+      currentThemeName = themeName;
+      currentTheme = THEMES[themeName];
+
+      // Update CSS variables for UI accents
+      document.documentElement.style.setProperty('--accent', currentTheme.primary);
+      document.documentElement.style.setProperty('--accent-glow', currentTheme.glow);
+
+      // Update topbar theme buttons if present
+      const themeBtns = document.querySelectorAll('.theme-btn');
+      themeBtns.forEach((b) => b.classList.toggle('active', b.dataset.theme === themeName));
+
+      // Update Reel Theme Pill
+      const reelDot = document.getElementById('reelThemeDot');
+      const reelName = document.getElementById('reelThemeName');
+      const pillDots = document.querySelectorAll('.pill-color-dot');
+      if (reelDot && reelName) {
+        const themeLabels = {
+          cyan: 'CYBER CYAN',
+          amber: 'VENOM AMBER',
+          violet: 'PHANTOM VIOLET',
+          emerald: 'MATRIX GREEN',
+          white: 'SKELETAL SILVER'
+        };
+        reelDot.style.background = currentTheme.primary;
+        reelDot.style.boxShadow = `0 0 14px ${currentTheme.primary}`;
+        reelName.textContent = themeLabels[themeName] || themeName.toUpperCase();
+        reelName.style.color = currentTheme.primary;
+
+        pillDots.forEach((pd) => {
+          pd.classList.toggle('active', pd.dataset.theme === themeName);
+        });
+      }
+    };
+
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    themeButtons.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        window.switchTheme(btn.dataset.theme);
+      });
+    });
+
+    const pillDots = document.querySelectorAll('.pill-color-dot');
+    pillDots.forEach((pd) => {
+      pd.addEventListener('click', (e) => {
+        e.stopPropagation();
+        window.switchTheme(pd.dataset.theme);
+      });
+    });
+
+
+
+    // Strike button
+    const btnStrike = document.getElementById('btnStrike');
+    btnStrike.addEventListener('click', (e) => {
+      e.stopPropagation();
+      triggerStrike();
+    });
+
+    // Code snippet copy
+    const btnCopy = document.getElementById('btnCopy');
+    btnCopy.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const codeSnippet = `document.addEventListener("mouseup", function(event) {
+  if ((event.button === 0)) {
+    Input.mouse.left = false;
+  }
+  if ((event.button === 1)) {
+    Input.mouse.middle = false;
+  }
+  if ((event.button === 2)) {
+    Input.mouse.right = false;
+  }
+});`;
+      navigator.clipboard.writeText(codeSnippet).then(() => {
+        btnCopy.textContent = 'Copied!';
+        setTimeout(() => { btnCopy.textContent = 'Copy'; }, 1800);
+      });
+    });
+
+    // Traffic light dots minimize / close toggle
+    const footerCard = document.getElementById('footer-card');
+    document.querySelector('.dot.red').addEventListener('click', (e) => {
+      e.stopPropagation();
+      footerCard.style.opacity = '0';
+      footerCard.style.pointerEvents = 'none';
+      setTimeout(() => {
+        footerCard.style.display = 'none';
+      }, 300);
+    });
+    document.querySelector('.dot.yellow').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const codeBody = document.querySelector('.code-body');
+      codeBody.style.display = codeBody.style.display === 'none' ? 'block' : 'none';
+    });
+
+    /* ========================================================
+       CHOREOGRAPHED INSTAGRAM DEMO SEQUENCE (Slow & Smooth Cinematic)
+    ======================================================== */
+    const easeInOut = (t) => 0.5 - 0.5 * Math.cos(Math.max(0, Math.min(1, t)) * Math.PI);
+    const easeOutQuad = (t) => { t = Math.max(0, Math.min(1, t)); return t * (2 - t); };
+
+    function getCinematicPos(elapsed) {
+      const cx = 540, cy = 740;
+      const Rx = 360, Ry = 370;
+      let x = cx, y = cy - Ry;
+      let shouldStrike = false;
+
+      // ROUND 1 (0.0s – 4.8s): Smooth Enlarged Circle (Theme 1: Cyber Cyan)
+      const tRound1 = 4.8;
+      // ROUND 2 (4.8s – 12.0s): Seamless Rounded Rectangle (Theme 2: Venom Amber & Theme 3: Phantom Violet)
+      const tRound2 = 12.0;
+
+      if (elapsed < tRound1) {
+        // 1st Round: Sweeping enlarged circle starting at top (540, 370) and moving clockwise
+        const p = elapsed / tRound1;
+        const ang = -Math.PI / 2 + p * (Math.PI * 2);
+        x = cx + Math.cos(ang) * Rx;
+        y = cy + Math.sin(ang) * Ry;
+
+        // Strike 1 (Cyan venom shockwave & sparks)
+        if (elapsed >= 4.2 && elapsed <= 4.45) {
+          shouldStrike = true;
+        }
+      } else if (elapsed < tRound2) {
+        // 2nd Round: Wide-turn rounded rectangle with zero angular jerk or clipping
+        const p = (elapsed - tRound1) / (tRound2 - tRound1);
+
+        const halfW = 360, halfH = 370, cr = 160;
+        const segTopR = halfW - cr;           // 200: (cx, cy-halfH) -> (cx+halfW-cr, cy-halfH)
+        const cornerArc = (Math.PI / 2) * cr; // ~251.327
+        const segRight = 2 * (halfH - cr);    // 420: top-right to bottom-right
+        const segBottom = 2 * (halfW - cr);   // 400: bottom-right to bottom-left
+        const segLeft = 2 * (halfH - cr);     // 420: bottom-left to top-left
+        const segTopL = halfW - cr;           // 200: top-left back to (cx, cy-halfH)
+
+        const totalPerim = segTopR + cornerArc + segRight + cornerArc + segBottom + cornerArc + segLeft + cornerArc + segTopL;
+        let s = p * totalPerim;
+
+        if (s < segTopR) {
+          // 1. Top right straight: (540, 370) -> (740, 370)
+          const u = s / segTopR;
+          x = cx + u * segTopR;
+          y = cy - halfH;
+        } else if ((s -= segTopR) < cornerArc) {
+          // 2. Top-right corner: curves from moving right to moving down
+          const ang = -Math.PI / 2 + (s / cornerArc) * (Math.PI / 2);
+          x = (cx + halfW - cr) + Math.cos(ang) * cr;
+          y = (cy - halfH + cr) + Math.sin(ang) * cr;
+        } else if ((s -= cornerArc) < segRight) {
+          // 3. Right edge: moves down from (900, 530) to (900, 950)
+          const u = s / segRight;
+          x = cx + halfW;
+          y = (cy - halfH + cr) + u * segRight;
+        } else if ((s -= segRight) < cornerArc) {
+          // 4. Bottom-right corner: curves from moving down to moving left
+          const ang = 0 + (s / cornerArc) * (Math.PI / 2);
+          x = (cx + halfW - cr) + Math.cos(ang) * cr;
+          y = (cy + halfH - cr) + Math.sin(ang) * cr;
+        } else if ((s -= cornerArc) < segBottom) {
+          // 5. Bottom edge: moves left from (740, 1110) to (340, 1110)
+          const u = s / segBottom;
+          x = (cx + halfW - cr) - u * segBottom;
+          y = cy + halfH;
+        } else if ((s -= segBottom) < cornerArc) {
+          // 6. Bottom-left corner: curves from moving left to moving up
+          const ang = Math.PI / 2 + (s / cornerArc) * (Math.PI / 2);
+          x = (cx - halfW + cr) + Math.cos(ang) * cr;
+          y = (cy + halfH - cr) + Math.sin(ang) * cr;
+        } else if ((s -= cornerArc) < segLeft) {
+          // 7. Left edge: moves up from (180, 950) to (180, 530)
+          const u = s / segLeft;
+          x = cx - halfW;
+          y = (cy + halfH - cr) - u * segLeft;
+        } else if ((s -= segLeft) < cornerArc) {
+          // 8. Top-left corner: curves from moving up to moving right
+          const ang = Math.PI + (s / cornerArc) * (Math.PI / 2);
+          x = (cx - halfW + cr) + Math.cos(ang) * cr;
+          y = (cy - halfH + cr) + Math.sin(ang) * cr;
+        } else {
+          // 9. Top left straight: moves right from (340, 370) back to (540, 370)
+          s -= cornerArc;
+          const u = Math.min(1, Math.max(0, s / segTopL));
+          x = (cx - halfW + cr) + u * segTopL;
+          y = cy - halfH;
+        }
+
+        // Strike 2 (Amber venom shockwave) & Strike 3 (Violet grand finale)
+        if (elapsed >= 8.7 && elapsed <= 8.95) {
+          shouldStrike = true;
+        } else if (elapsed >= 11.4 && elapsed <= 11.7) {
+          shouldStrike = true;
+        }
+      } else {
+        // 12.0s – 14.0s: Serene hover & alert rest pose at center top
+        const p = easeInOut((elapsed - tRound2) / (14.0 - tRound2));
+        x = lerp(cx, cx + 25, p);
+        y = lerp(cy - Ry, cy - Ry + 40, p);
+      }
+
+      return { x, y, shouldStrike };
+    }
+
+    window.startScorpioDemo = function () {
+      let startTime = null;
+      let lastStrike = -999;
+
+      function runDemo(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const elapsed = (timestamp - startTime) / 1000;
+
+        // Dynamic 3-theme switching across the demo
+        if (elapsed < 4.8) {
+          if (currentThemeName !== 'cyan') window.switchTheme('cyan');
+        } else if (elapsed < 9.4) {
+          if (currentThemeName !== 'amber') window.switchTheme('amber');
+        } else {
+          if (currentThemeName !== 'violet') window.switchTheme('violet');
+        }
+
+        const { x, y, shouldStrike } = getCinematicPos(elapsed);
+        mouse.x = x;
+        mouse.y = y;
+        ptr.style.left = x + 'px';
+        ptr.style.top = y + 'px';
+
+        if (shouldStrike && (elapsed - lastStrike > 2.0)) {
+          lastStrike = elapsed;
+          triggerStrike();
+          ptr.classList.add('clicking');
+          setTimeout(() => ptr.classList.remove('clicking'), 300);
+        }
+
+        if (elapsed >= 14.0) {
+          const demoMarker = document.getElementById('demoComplete');
+          if (demoMarker) demoMarker.classList.add('done');
+          return;
+        }
+
+        requestAnimationFrame(runDemo);
+      }
+
+      requestAnimationFrame(runDemo);
+    };
+
+    /* ========================================================
+       DETERMINISTIC SIMULATION STEP (For Broadcast-Grade Video)
+    ======================================================== */
+    window._lastSimStrike = -999;
+
+    window.stepScorpioSimulation = function (elapsed) {
+      // Dynamic 3-theme switching across the video:
+      // 0.0s - 4.8s: Cyber Cyan
+      // 4.8s - 9.4s: Venom Amber
+      // 9.4s - 14.0s: Phantom Violet
+      if (elapsed < 4.8) {
+        if (currentThemeName !== 'cyan') window.switchTheme('cyan');
+      } else if (elapsed < 9.4) {
+        if (currentThemeName !== 'amber') window.switchTheme('amber');
+      } else {
+        if (currentThemeName !== 'violet') window.switchTheme('violet');
+      }
+
+      const { x, y, shouldStrike } = getCinematicPos(elapsed);
+
+      mouse.x = x;
+      mouse.y = y;
+      ptr.style.left = x + 'px';
+      ptr.style.top = y + 'px';
+
+      if (shouldStrike && (elapsed - window._lastSimStrike > 2.0)) {
+        window._lastSimStrike = elapsed;
+        triggerStrike();
+        ptr.classList.add('clicking');
+      } else if (!shouldStrike && (elapsed - window._lastSimStrike > 0.35)) {
+        ptr.classList.remove('clicking');
+      }
+
+      // Update simulation step
+      updateKinematics();
+
+      // Render fresh canvas frame
+      ctx.clearRect(0, 0, W, H);
+      renderEffects();
+      renderLegs();
+      renderTail();
+      renderRibcageAndSpines();
+      renderSpinalCord();
+      renderStinger();
+      renderScorpionHead();
+    };
+
+    // Demo trigger button in topbar
+    const btnDemo = document.getElementById('btnDemo');
+    if (btnDemo) {
+      btnDemo.addEventListener('click', (e) => {
+        e.stopPropagation();
+        window.startScorpioDemo();
+      });
+    }
+  </script>
+</body>
+
+</html>

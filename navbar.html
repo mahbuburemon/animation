@@ -1,0 +1,2669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Liquid Glass Navbar | Hyper Ice Edition</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* =========================================================
+           ULTRA-ATTRACTIVE THEMES ENGINE
+        ========================================================= */
+
+        /* 1. HYPER ICE (DEFAULT) */
+        :root, body[data-theme="ice"] {
+            --theme-name: "Hyper Ice";
+            --primary: #00f2fe;
+            --primary-2: #4facfe;
+            --primary-rgb: 0, 242, 254;
+            --primary-glow: rgba(0, 242, 254, 0.6);
+            --primary-ambient-1: rgba(0, 242, 254, 0.2);
+            --primary-ambient-2: rgba(79, 172, 254, 0.16);
+            --primary-ambient-3: rgba(0, 114, 255, 0.12);
+            --primary-text: #e8fcff;
+            --border-highlight: rgba(0, 242, 254, 0.45);
+            --dark: #010c14;
+            --dark-card: rgba(3, 22, 36, 0.72);
+            --gradient-accent: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            --conic-border: conic-gradient(from 180deg at 50% 50%, #00f2fe, #4facfe, #a8ff78, #00f2fe);
+        }
+
+        /* 2. EMERALD MATRIX */
+        body[data-theme="emerald"] {
+            --theme-name: "Matrix Mint";
+            --primary: #00f5a0;
+            --primary-2: #00d9f5;
+            --primary-rgb: 0, 245, 160;
+            --primary-glow: rgba(0, 245, 160, 0.55);
+            --primary-ambient-1: rgba(0, 245, 160, 0.18);
+            --primary-ambient-2: rgba(0, 217, 245, 0.14);
+            --primary-ambient-3: rgba(0, 180, 110, 0.10);
+            --primary-text: #e6fff6;
+            --border-highlight: rgba(0, 245, 160, 0.4);
+            --dark: #020805;
+            --dark-card: rgba(6, 18, 12, 0.72);
+            --gradient-accent: linear-gradient(135deg, #00f5a0 0%, #00d9f5 100%);
+            --conic-border: conic-gradient(from 180deg at 50% 50%, #00f5a0, #00d9f5, #7928ca, #00f5a0);
+        }
+
+        /* 3. CYBERPUNK NEON (SYNTHWAVE) */
+        body[data-theme="cyberpunk"] {
+            --theme-name: "Cyberpunk";
+            --primary: #ff007f;
+            --primary-2: #9d00ff;
+            --primary-rgb: 255, 0, 127;
+            --primary-glow: rgba(255, 0, 127, 0.6);
+            --primary-ambient-1: rgba(255, 0, 127, 0.20);
+            --primary-ambient-2: rgba(157, 0, 255, 0.16);
+            --primary-ambient-3: rgba(0, 240, 255, 0.12);
+            --primary-text: #ffe5f1;
+            --border-highlight: rgba(255, 0, 127, 0.45);
+            --dark: #0a0110;
+            --dark-card: rgba(24, 5, 32, 0.72);
+            --gradient-accent: linear-gradient(135deg, #ff007f 0%, #9d00ff 50%, #00f0ff 100%);
+            --conic-border: conic-gradient(from 180deg at 50% 50%, #ff007f, #9d00ff, #00f0ff, #ff007f);
+        }
+
+        /* 4. GALACTIC NEBULA (COSMIC INDIGO) */
+        body[data-theme="violet"] {
+            --theme-name: "Galactic Nebula";
+            --primary: #8b5cf6;
+            --primary-2: #38bdf8;
+            --primary-rgb: 139, 92, 246;
+            --primary-glow: rgba(139, 92, 246, 0.6);
+            --primary-ambient-1: rgba(139, 92, 246, 0.20);
+            --primary-ambient-2: rgba(56, 189, 248, 0.16);
+            --primary-ambient-3: rgba(168, 85, 247, 0.12);
+            --primary-text: #f4ecff;
+            --border-highlight: rgba(139, 92, 246, 0.45);
+            --dark: #040514;
+            --dark-card: rgba(12, 11, 35, 0.72);
+            --gradient-accent: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #38bdf8 100%);
+            --conic-border: conic-gradient(from 180deg at 50% 50%, #8b5cf6, #38bdf8, #ec4899, #8b5cf6);
+        }
+
+        /* 5. SOLAR GOLD (24K IMPERIAL AMBER) */
+        body[data-theme="amber"] {
+            --theme-name: "Solar Gold";
+            --primary: #ffb703;
+            --primary-2: #fb8500;
+            --primary-rgb: 255, 183, 3;
+            --primary-glow: rgba(255, 183, 3, 0.6);
+            --primary-ambient-1: rgba(255, 183, 3, 0.20);
+            --primary-ambient-2: rgba(251, 133, 0, 0.16);
+            --primary-ambient-3: rgba(255, 84, 0, 0.12);
+            --primary-text: #fff8e8;
+            --border-highlight: rgba(255, 183, 3, 0.45);
+            --dark: #120701;
+            --dark-card: rgba(30, 15, 3, 0.72);
+            --gradient-accent: linear-gradient(135deg, #ffb703 0%, #fb8500 50%, #ff5400 100%);
+            --conic-border: conic-gradient(from 180deg at 50% 50%, #ffb703, #fb8500, #ffe600, #ffb703);
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+
+            font-family: 'Outfit', sans-serif;
+            color: white;
+
+            background:
+                radial-gradient(circle at 18% 18%,
+                    var(--primary-ambient-1),
+                    transparent 42%),
+                radial-gradient(circle at 82% 82%,
+                    var(--primary-ambient-2),
+                    transparent 46%),
+                radial-gradient(circle at 50% 50%,
+                    var(--primary-ambient-3),
+                    transparent 55%),
+                var(--dark);
+
+            transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        /* Subtle Background Grid Mesh */
+        .ambient-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(circle at 50% 35%, black 30%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at 50% 35%, black 30%, transparent 80%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* =========================================================
+           AMBIENT BACKGROUND BLOBS
+        ========================================================= */
+
+        .ambient {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(75px);
+            z-index: 0;
+            animation: ambientMove 14s ease-in-out infinite alternate;
+            transition: background 0.8s ease;
+        }
+
+        .ambient.one {
+            width: 700px;
+            height: 700px;
+            top: -240px;
+            left: -180px;
+            background: radial-gradient(circle, var(--primary-ambient-1), transparent 65%);
+        }
+
+        .ambient.two {
+            width: 650px;
+            height: 650px;
+            right: -220px;
+            bottom: -260px;
+            background: radial-gradient(circle, var(--primary-ambient-2), transparent 65%);
+            animation-delay: -6s;
+        }
+
+        .ambient.three {
+            width: 480px;
+            height: 480px;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, var(--primary-ambient-3), transparent 70%);
+            animation-duration: 20s;
+        }
+
+        @keyframes ambientMove {
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+
+            to {
+                transform: translate(80px, 60px) scale(1.18);
+            }
+        }
+
+
+        /* =========================================================
+           NAVBAR CONTAINER
+        ========================================================= */
+
+        .navbar {
+            position: relative;
+            width: min(1040px, 100%);
+            height: 78px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 8px 12px 8px 22px;
+
+            border: 1px solid rgba(255, 255, 255, .14);
+            border-radius: 28px;
+
+            background:
+                linear-gradient(135deg,
+                    rgba(255, 255, 255, .10),
+                    rgba(255, 255, 255, .03));
+
+            backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
+
+            box-shadow:
+                inset 0 1px 1px rgba(255, 255, 255, .2),
+                inset 0 -1px 2px rgba(0, 0, 0, .4),
+                0 25px 70px rgba(0, 0, 0, .55);
+
+            overflow: hidden;
+
+            z-index: 99;
+
+            transition:
+                width .55s cubic-bezier(.22, 1, .36, 1),
+                border-color .6s ease,
+                box-shadow .6s ease;
+        }
+
+        /* Animated Glowing Conic Border Highlight Runner */
+        .navbar::after {
+            content: "";
+            position: absolute;
+            inset: -1.5px;
+            border-radius: 29.5px;
+            padding: 1.5px;
+            background: var(--conic-border);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0.45;
+            animation: rotateConic 10s linear infinite;
+            transition: background 0.8s ease;
+        }
+
+        @keyframes rotateConic {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Glass Reflection Sweep */
+        .navbar::before {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(110deg,
+                    transparent 15%,
+                    rgba(255, 255, 255, .12) 30%,
+                    transparent 45%);
+
+            transform: translateX(-120%);
+
+            animation: glassSweep 7s ease-in-out infinite;
+
+            pointer-events: none;
+        }
+
+        @keyframes glassSweep {
+            0%,
+            65% {
+                transform: translateX(-120%);
+            }
+
+            100% {
+                transform: translateX(120%);
+            }
+        }
+
+
+        /* =========================================================
+           LIQUID CURSOR LIGHT
+        ========================================================= */
+
+        .liquid {
+            position: absolute;
+
+            width: 170px;
+            height: 170px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(circle at 35% 30%,
+                    rgba(var(--primary-rgb), .85),
+                    rgba(var(--primary-rgb), .28) 35%,
+                    transparent 72%);
+
+            filter: blur(12px);
+
+            opacity: .5;
+
+            pointer-events: none;
+
+            transform: translate(-50%, -50%);
+
+            transition:
+                left .7s cubic-bezier(.22, 1, .36, 1),
+                top .7s cubic-bezier(.22, 1, .36, 1),
+                background .6s ease;
+        }
+
+
+        /* =========================================================
+           LOGO
+        ========================================================= */
+
+        .logo {
+            position: relative;
+            z-index: 5;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            color: white;
+            text-decoration: none;
+
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .logo-mark {
+            width: 46px;
+            height: 46px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 15px;
+
+            background: var(--gradient-accent);
+
+            color: #030806;
+
+            font-size: 20px;
+            font-weight: 900;
+            font-family: 'Outfit', sans-serif;
+
+            box-shadow:
+                0 0 25px var(--primary-glow),
+                inset 0 1px 1px rgba(255, 255, 255, .7);
+
+            transition: 
+                transform .5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                background .6s ease,
+                box-shadow .6s ease;
+        }
+
+        .logo:hover .logo-mark {
+            transform:
+                rotate(-8deg) scale(1.1);
+
+            box-shadow:
+                0 0 45px var(--primary-glow);
+        }
+
+        .logo-info strong {
+            display: block;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .logo-info span {
+            display: block;
+            margin-top: 3px;
+            color: #8da49a;
+            font-size: 9.5px;
+            letter-spacing: 1.4px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+
+        /* =========================================================
+           NAV LINKS (POSITIONED IN THE MIDDLE)
+        ========================================================= */
+
+        .nav-links {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4;
+
+            display: flex;
+            align-items: center;
+
+            gap: 4px;
+
+            padding: 5px;
+            transition: left 0.4s ease, opacity 0.3s ease;
+        }
+
+        .active-liquid {
+            position: absolute;
+
+            top: 5px;
+            left: 5px;
+
+            height: 43px;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(135deg,
+                    rgba(var(--primary-rgb), .22),
+                    rgba(var(--primary-rgb), .08));
+
+            border: 1px solid rgba(var(--primary-rgb), .38);
+
+            box-shadow:
+                inset 0 1px 1px rgba(255, 255, 255, .2),
+                0 0 25px rgba(var(--primary-rgb), .15);
+
+            transition:
+                left .65s cubic-bezier(.22, 1, .36, 1),
+                width .65s cubic-bezier(.22, 1, .36, 1),
+                background .6s ease,
+                border-color .6s ease,
+                box-shadow .6s ease;
+        }
+
+        .nav-link {
+            position: relative;
+
+            height: 43px;
+
+            display: flex;
+            align-items: center;
+
+            padding: 0 18px;
+
+            border-radius: 14px;
+
+            color: #92a49b;
+
+            text-decoration: none;
+
+            font-size: 13.5px;
+            font-weight: 500;
+
+            transition:
+                color .3s ease,
+                transform .35s ease;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        .nav-link.active {
+            color: white;
+            font-weight: 600;
+        }
+
+
+        /* =========================================================
+           ACTIONS (SEARCH + THEMES + LOGIN + MOBILE)
+        ========================================================= */
+
+        .actions {
+            position: relative;
+            z-index: 5;
+
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+        }
+
+
+
+
+        /* =========================================================
+           SEARCH
+        ========================================================= */
+
+        .search-wrapper {
+            position: relative;
+
+            height: 45px;
+
+            display: flex;
+            align-items: center;
+
+            border-radius: 16px;
+
+            transition:
+                width .6s cubic-bezier(.22, 1, .36, 1),
+                background .4s ease,
+                border .4s ease,
+                box-shadow .4s ease;
+        }
+
+        .search-wrapper.closed {
+            width: 45px;
+        }
+
+        .search-wrapper.open {
+            width: 215px;
+
+            background:
+                rgba(255, 255, 255, .07);
+
+            border: 1px solid rgba(var(--primary-rgb), .4);
+
+            box-shadow:
+                0 0 25px rgba(var(--primary-rgb), .15),
+                inset 0 1px 1px rgba(255, 255, 255, .1);
+        }
+
+
+        /* SEARCH BUTTON */
+
+        .search-btn {
+            position: absolute;
+
+            left: 0;
+            top: 0;
+
+            width: 45px;
+            height: 45px;
+
+            display: grid;
+            place-items: center;
+
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 16px;
+
+            background:
+                rgba(255, 255, 255, .04);
+
+            color: #a2b3ab;
+
+            cursor: pointer;
+
+            z-index: 3;
+
+            transition:
+                transform .55s cubic-bezier(.22, 1, .36, 1),
+                color .3s ease,
+                border .3s ease,
+                background .3s ease;
+        }
+
+        .search-wrapper.open .search-btn {
+            border-color: transparent;
+            background: transparent;
+
+            color: var(--primary);
+
+            transform:
+                rotate(90deg) scale(.92);
+        }
+
+        .search-btn:hover {
+            color: var(--primary);
+
+            border-color:
+                rgba(var(--primary-rgb), .4);
+        }
+
+
+        /* SEARCH INPUT */
+
+        .search-input {
+            position: absolute;
+
+            left: 50px;
+            right: 42px;
+
+            height: 100%;
+
+            border: 0;
+            outline: 0;
+
+            background: transparent;
+
+            color: white;
+
+            font-family: inherit;
+            font-size: 13px;
+
+            opacity: 0;
+
+            transform: translateX(-12px);
+
+            pointer-events: none;
+
+            transition:
+                opacity .3s ease .15s,
+                transform .45s ease .1s;
+        }
+
+        .search-input::placeholder {
+            color: #71847a;
+        }
+
+        .search-wrapper.open .search-input {
+            opacity: 1;
+
+            transform: translateX(0);
+
+            pointer-events: auto;
+        }
+
+
+        /* SEARCH CLOSE */
+
+        .search-close {
+            position: absolute;
+
+            right: 8px;
+            top: 8px;
+
+            width: 29px;
+            height: 29px;
+
+            display: grid;
+            place-items: center;
+
+            border: 0;
+            border-radius: 9px;
+
+            background:
+                rgba(255, 255, 255, .06);
+
+            color: #80938a;
+
+            cursor: pointer;
+
+            opacity: 0;
+
+            transform:
+                scale(.5) rotate(-45deg);
+
+            pointer-events: none;
+
+            transition:
+                opacity .3s ease .2s,
+                transform .4s cubic-bezier(.22, 1, .36, 1),
+                color .3s ease;
+        }
+
+        .search-wrapper.open .search-close {
+            opacity: 1;
+
+            transform:
+                scale(1) rotate(0);
+
+            pointer-events: auto;
+        }
+
+        .search-close:hover {
+            color: white;
+            background: rgba(255, 255, 255, .12);
+        }
+
+
+        /* =========================================================
+           INSTAGRAM CREATOR BUTTON: CODER'S MAHBUBUR
+        ========================================================= */
+
+        .creator-btn,
+        .login-btn {
+            position: relative;
+            height: 45px;
+            padding: 0 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            border: 1px solid rgba(var(--primary-rgb), .45);
+            border-radius: 16px;
+
+            background:
+                linear-gradient(135deg,
+                    rgba(var(--primary-rgb), .18),
+                    rgba(var(--primary-rgb), .06));
+
+            color: var(--primary-text);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+
+            overflow: hidden;
+            isolation: isolate;
+
+            box-shadow:
+                inset 0 1px 1px rgba(255, 255, 255, .15),
+                0 0 20px rgba(var(--primary-rgb), .1);
+
+            transition:
+                transform .4s cubic-bezier(.22, 1, .36, 1),
+                border-color .4s ease,
+                box-shadow .4s ease,
+                color .3s ease,
+                background .6s ease,
+                padding .4s ease;
+        }
+
+        /* Moving liquid background */
+        .creator-btn::before,
+        .login-btn::before {
+            content: "";
+            position: absolute;
+            width: 85px;
+            height: 85px;
+            left: -20px;
+            top: -35px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle,
+                    rgba(var(--primary-rgb), .7),
+                    rgba(var(--primary-rgb), .15) 60%,
+                    transparent 70%);
+            filter: blur(8px);
+            z-index: -1;
+            animation: loginBlob 4s ease-in-out infinite alternate;
+            transition: background 0.6s ease;
+        }
+
+        /* Shimmer */
+        .creator-btn::after,
+        .login-btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 70%;
+            height: 100%;
+            background:
+                linear-gradient(100deg,
+                    transparent,
+                    rgba(255, 255, 255, .32),
+                    transparent);
+            transform: skewX(-20deg);
+            transition: left .65s ease;
+            pointer-events: none;
+        }
+
+        .creator-btn:hover::after,
+        .login-btn:hover::after {
+            left: 140%;
+        }
+
+        @keyframes loginBlob {
+            0% { transform: translate(0, 0) scale(.8); border-radius: 50% 50% 45% 55%; }
+            50% { transform: translate(40px, 8px) scale(1.15); border-radius: 60% 40% 55% 45%; }
+            100% { transform: translate(65px, -8px) scale(.95); border-radius: 40% 60% 45% 55%; }
+        }
+
+        .creator-btn:hover,
+        .login-btn:hover {
+            color: white;
+            border-color: rgba(var(--primary-rgb), .9);
+            transform: translateY(-2px) scale(1.035);
+            box-shadow:
+                0 10px 30px rgba(var(--primary-rgb), .3),
+                0 0 25px rgba(var(--primary-rgb), .2),
+                inset 0 1px 1px rgba(255, 255, 255, .25);
+        }
+
+        .insta-icon,
+        .login-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            color: var(--primary);
+            transition: transform .45s cubic-bezier(.22, 1, .36, 1), color .3s ease;
+        }
+
+        .creator-btn:hover .insta-icon,
+        .login-btn:hover .login-icon {
+            transform: scale(1.18) rotate(-6deg);
+        }
+
+        .insta-arrow,
+        .login-arrow {
+            font-size: 13px;
+            color: var(--primary);
+            transition: transform .4s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .creator-btn:hover .insta-arrow {
+            transform: scale(1.25) rotate(15deg);
+        }
+
+        /* Responsive collapse when search expands on desktop */
+        .search-wrapper.open ~ .creator-btn span:not(.insta-arrow) {
+            display: none;
+        }
+
+        .search-wrapper.open ~ .creator-btn {
+            padding: 0 13px;
+        }
+
+
+        /* =========================================================
+           MOBILE MENU
+        ========================================================= */
+
+        .menu {
+            display: none;
+
+            width: 44px;
+            height: 44px;
+
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 14px;
+
+            background: rgba(255, 255, 255, .04);
+
+            cursor: pointer;
+        }
+
+        .menu span {
+            display: block;
+
+            width: 19px;
+            height: 2px;
+
+            margin: 4px auto;
+
+            background: white;
+
+            transition: .35s ease;
+        }
+
+
+        /* =========================================================
+           SHOWCASE HERO SECTION (CENTERED IN THE MIDDLE OF SCREEN)
+        ========================================================= */
+        .showcase-hero {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 40px 24px;
+            gap: 0;
+            z-index: 2;
+        }
+
+        /* Centered Navbar with space below */
+        .navbar {
+            margin-bottom: 40px !important;
+        }
+
+        /* =========================================================
+           UNIFIED COMPACT THEME CARD (ALL COLORS IN ONE CARD)
+        ========================================================= */
+        .theme-unified-card {
+            background: var(--dark-card);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 12px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 440px;
+            width: 100%;
+            margin-bottom: 28px; /* Dedicated space before footer */
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            box-shadow: 
+                0 20px 45px rgba(0, 0, 0, 0.45),
+                inset 0 1px 1px rgba(255, 255, 255, 0.15),
+                0 0 25px var(--primary-glow);
+            transition: 
+                border-color 0.4s ease,
+                box-shadow 0.4s ease,
+                background 0.5s ease;
+        }
+
+        /* =========================================================
+           SHOWCASE FOOTER SECTION
+        ========================================================= */
+        .showcase-footer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .footer-brand-strip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.4px;
+            padding: 8px 22px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .footer-brand-strip .brand-sparkle {
+            color: var(--primary);
+            font-size: 12px;
+            animation: pulsePoint 1.5s infinite alternate;
+        }
+
+        .footer-brand-strip strong {
+            color: var(--primary-text);
+            font-weight: 700;
+        }
+
+        .theme-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .theme-card-header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-indicator-point {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+            animation: pulsePoint 1.5s infinite alternate;
+        }
+
+        .theme-card-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+        }
+
+        .theme-card-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--primary);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .theme-swatches-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .swatch-pill-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 7px 8px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            color: #92a49b;
+            font-family: 'Outfit', sans-serif;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .swatch-pill-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .swatch-pill-btn.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 0 15px var(--primary-glow);
+            transform: translateY(-2px) scale(1.04);
+        }
+
+        .swatch-circle {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 8px currentColor;
+            flex-shrink: 0;
+        }
+
+        .swatch-circle.emerald { background: linear-gradient(135deg, #00f5a0, #00d9f5); color: #00f5a0; }
+        .swatch-circle.cyberpunk { background: linear-gradient(135deg, #ff007f, #9d00ff); color: #ff007f; }
+        .swatch-circle.violet { background: linear-gradient(135deg, #8b5cf6, #38bdf8); color: #8b5cf6; }
+        .swatch-circle.amber { background: linear-gradient(135deg, #ffb703, #fb8500); color: #ffb703; }
+        .swatch-circle.ice { background: linear-gradient(135deg, #00f2fe, #4facfe); color: #00f2fe; }
+
+
+        /* =========================================================
+           FOOTER CARD-STYLE CODE & CONTENT SECTION
+        ========================================================= */
+        .footer-section {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 24px 80px;
+            width: 100%;
+        }
+
+        .footer-card {
+            position: relative;
+            width: 100%;
+            max-width: 880px;
+            background: var(--dark-card);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
+            box-shadow: 
+                0 30px 80px rgba(0, 0, 0, 0.65),
+                inset 0 1px 1px rgba(255, 255, 255, 0.18),
+                0 0 35px var(--primary-glow);
+            overflow: hidden;
+            transition: 
+                border-color 0.5s ease,
+                box-shadow 0.5s ease,
+                background 0.5s ease;
+        }
+
+        /* Rotating Conic Rim Glow */
+        .footer-card::after {
+            content: "";
+            position: absolute;
+            inset: -1.5px;
+            border-radius: 25.5px;
+            padding: 1.5px;
+            background: var(--conic-border);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0.35;
+            animation: rotateConic 12s linear infinite;
+            transition: background 0.8s ease;
+        }
+
+        /* Glass sweep light */
+        .footer-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.05) 40%, transparent 60%);
+            transform: translateX(-120%);
+            animation: glassSweep 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* CARD HEADER */
+        .footer-card-header {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            background: rgba(0, 0, 0, 0.35);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .card-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mac-window-dots {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .mac-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .mac-dot.close { background: #ff5f56; box-shadow: 0 0 8px rgba(255, 95, 86, 0.5); }
+        .mac-dot.min { background: #ffbd2e; box-shadow: 0 0 8px rgba(255, 189, 46, 0.5); }
+        .mac-dot.max { background: #27c93f; box-shadow: 0 0 8px rgba(39, 201, 63, 0.5); }
+
+        .mac-dot:hover {
+            transform: scale(1.18);
+        }
+
+        .code-file-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #d1d5db;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+        .code-file-badge svg {
+            color: var(--primary);
+            transition: color 0.4s ease;
+        }
+
+        .footer-theme-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 9px;
+            border-radius: 12px;
+            background: rgba(var(--primary-rgb), 0.12);
+            border: 1px solid rgba(var(--primary-rgb), 0.3);
+            font-family: 'Outfit', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary);
+            transition: all 0.4s ease;
+        }
+
+        .pulse-point-sm {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 6px var(--primary);
+            animation: pulsePoint 1.5s infinite alternate;
+        }
+
+        .card-header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* CARD TABS */
+        .card-tabs {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 3px;
+            gap: 3px;
+        }
+
+        .card-tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 9px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: #94a3b8;
+            font-family: 'Outfit', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card-tab-btn:hover {
+            color: #f8fafc;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .card-tab-btn.active {
+            background: rgba(255, 255, 255, 0.14);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-tab-btn.active svg {
+            color: var(--primary);
+        }
+
+        /* COPY BUTTON */
+        .copy-code-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 11px;
+            background: var(--gradient-accent);
+            border: none;
+            color: #030806;
+            font-family: 'Outfit', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 0 16px var(--primary-glow);
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+        }
+
+        .copy-code-btn:hover {
+            transform: translateY(-1.5px) scale(1.03);
+            box-shadow: 0 0 25px var(--primary-glow);
+        }
+
+        .copy-code-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* BODY PANELS */
+        .footer-card-body {
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-tab-panel {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-tab-panel.active {
+            display: block;
+            opacity: 1;
+            animation: fadeInPanel 0.35s ease;
+        }
+
+        @keyframes fadeInPanel {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .code-viewport {
+            background: rgba(2, 8, 14, 0.78);
+            padding: 14px 20px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #cbd5e1;
+            max-height: 205px;
+        }
+
+        .code-viewport::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+
+        .code-viewport::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .code-viewport::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 4px;
+        }
+
+        .code-viewport::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        .code-pre {
+            margin: 0;
+            white-space: pre;
+            font-family: inherit;
+        }
+
+        /* Syntax colors */
+        .kwd { color: #f43f5e; font-weight: 600; }
+        .attr { color: var(--primary); font-weight: 500; transition: color 0.4s ease; }
+        .str { color: #38bdf8; }
+        .prop { color: #a78bfa; font-weight: 600; }
+        .val { color: #34d399; }
+        .com { color: #64748b; font-style: italic; }
+
+        /* FEATURES GRID */
+        .features-content-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 14px 18px;
+            background: rgba(2, 8, 14, 0.55);
+        }
+
+        .feature-item-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            text-align: left;
+            transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .feature-item-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(var(--primary-rgb), 0.4);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-item-icon {
+            font-size: 17px;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: rgba(var(--primary-rgb), 0.12);
+            border: 1px solid rgba(var(--primary-rgb), 0.25);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            color: var(--primary);
+            transition: color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .feature-item-body h4 {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 3px;
+            letter-spacing: -0.2px;
+        }
+
+        .feature-item-body p {
+            font-size: 11px;
+            color: #94a3b8;
+            line-height: 1.45;
+            margin: 0;
+        }
+
+        /* STATUSBAR */
+        .footer-card-statusbar {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.45);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 11px;
+            color: #64748b;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-pill {
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: #94a3b8;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        .status-indicator {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulsePoint 1.5s infinite alternate;
+        }
+
+
+
+        /* =========================================================
+           VIRTUAL ANIMATED CURSOR FOR INSTA REEL
+        ========================================================= */
+        .virtual-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 26px;
+            height: 26px;
+            pointer-events: none;
+            z-index: 999999;
+            transform: translate(-100px, -100px);
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            filter: drop-shadow(0 2px 12px var(--primary));
+            display: none;
+            will-change: transform;
+        }
+
+        .virtual-cursor.active {
+            display: block;
+        }
+
+        .virtual-cursor svg {
+            transition: transform 0.15s ease;
+        }
+
+        .virtual-cursor.clicking svg {
+            transform: scale(0.8) translate(2px, 2px);
+        }
+
+        .cursor-click-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            transform: translate(-50%, -50%) scale(0);
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .cursor-click-ring.ping {
+            animation: clickPing 0.4s ease-out forwards;
+        }
+
+        @keyframes clickPing {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
+        }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 960px) {
+
+            .navbar {
+                height: 70px;
+                padding-left: 14px;
+            }
+
+            .logo-info {
+                display: none;
+            }
+
+            .nav-links {
+                position: fixed;
+
+                top: 88px;
+                left: 18px;
+                right: 18px;
+
+                flex-direction: column;
+                align-items: stretch;
+
+                padding: 8px;
+
+                border-radius: 20px;
+
+                background:
+                    rgba(5, 15, 10, .94);
+
+                border: 1px solid rgba(255, 255, 255, .1);
+
+                backdrop-filter: blur(30px);
+
+                opacity: 0;
+                visibility: hidden;
+
+                transform:
+                    translateY(-15px) scale(.97);
+
+                transition: .4s ease;
+            }
+
+            .nav-links.open {
+                opacity: 1;
+                visibility: visible;
+
+                transform:
+                    translateY(0) scale(1);
+            }
+
+            .nav-link {
+                width: 100%;
+                height: 48px;
+            }
+
+            .active-liquid {
+                display: none;
+            }
+
+            .search-wrapper {
+                display: none;
+            }
+
+            .login-btn {
+                display: none;
+            }
+
+            .menu {
+                display: block;
+            }
+
+            .theme-unified-card {
+                max-width: 100%;
+                padding: 10px 14px;
+            }
+
+            .swatch-pill-btn {
+                padding: 6px 4px;
+                font-size: 10.5px;
+            }
+
+            /* Footer Card Responsive */
+            .footer-section {
+                padding: 10px 12px 60px;
+            }
+
+            .footer-card {
+                border-radius: 20px;
+            }
+
+            .footer-card-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .card-header-left, .card-header-right {
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .card-tabs {
+                flex: 1;
+                justify-content: space-around;
+            }
+
+            .card-tab-btn {
+                padding: 6px 8px;
+                font-size: 11px;
+            }
+
+            .features-content-grid {
+                grid-template-columns: 1fr;
+                padding: 16px;
+                gap: 12px;
+            }
+
+            .code-viewport {
+                padding: 14px 16px;
+                font-size: 11.5px;
+            }
+        }
+
+        @media (min-width: 961px) and (max-width: 1120px) {
+            .nav-link {
+                padding: 0 12px;
+                font-size: 13px;
+            }
+        }
+
+
+        @media (max-width: 580px) {
+
+            .navbar {
+                width: calc(100% - 20px);
+                top: 10px;
+            }
+
+
+        }
+    </style>
+</head>
+
+
+<body data-theme="ice">
+
+    <!-- Virtual Animated Cursor for Video Recording -->
+    <div id="virtualCursor" class="virtual-cursor">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M4 4l7 17 2.5-6.5L20 12 4 4z" fill="#ffffff" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <div class="cursor-click-ring" id="cursorClickRing"></div>
+    </div>
+
+    <!-- Ambient Grid & Orbs -->
+    <div class="ambient-grid"></div>
+    <div class="ambient one"></div>
+    <div class="ambient two"></div>
+    <div class="ambient three"></div>
+
+
+    <!-- MAIN SHOWCASE (ALL CONTENT & NAVBAR CENTERED IN THE MIDDLE OF THE SCREEN) -->
+    <main class="showcase-hero" id="home">
+
+        <header class="navbar" id="navbar">
+
+        <!-- LIQUID CURSOR -->
+        <div class="liquid" id="liquid"></div>
+
+
+        <!-- LOGO -->
+        <a href="#" class="logo" id="brandLogo">
+            <div class="logo-mark">
+                M
+            </div>
+
+            <div class="logo-info">
+                <strong>Navbar</strong>
+                <span>
+                    Build • Automate • Grow
+                </span>
+            </div>
+        </a>
+
+
+        <!-- NAVIGATION -->
+        <nav class="nav-links" id="navLinks">
+
+            <div class="active-liquid" id="activeLiquid"></div>
+
+            <a href="#home" class="nav-link" id="navHome">
+                Home
+            </a>
+
+            <a href="#about" class="nav-link" id="navAbout">
+                About
+            </a>
+
+            <a href="#services" class="nav-link" id="navServices">
+                Services
+            </a>
+
+            <a href="#projects" class="nav-link" id="navProjects">
+                Projects
+            </a>
+
+            <a href="#blog" class="nav-link" id="navBlog">
+                Blog
+            </a>
+
+            <a href="#contact" class="nav-link active" id="navContact">
+                Contact
+            </a>
+
+        </nav>
+
+
+        <!-- ACTIONS -->
+        <div class="actions">
+
+            <!-- =========================
+                 SEARCH
+            ========================== -->
+            <div class="search-wrapper closed" id="searchWrapper">
+
+                <button class="search-btn" id="searchBtn" aria-label="Open search">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <path d="M20 20L16.2 16.2"></path>
+                    </svg>
+                </button>
+
+                <input type="text" class="search-input" id="searchInput" placeholder="Search something...">
+
+                <button class="search-close" id="searchClose">
+                    ×
+                </button>
+
+            </div>
+
+
+            <!-- =========================
+                 INSTAGRAM CREATOR BUTTON: CODER'S MAHBUBUR
+            ========================== -->
+            <a href="https://instagram.com/codersmahbubur" target="_blank" class="creator-btn" id="creatorBtn" title="Follow @Coder's Mahbubur on Instagram">
+
+                <!-- Instagram camera icon -->
+                <svg class="insta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+
+                <span>Coder's Mahbubur</span>
+
+                <span class="insta-arrow">✦</span>
+
+            </a>
+
+
+            <!-- MOBILE MENU -->
+            <button class="menu" id="menu" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+        </div>
+
+    </header>
+
+        <!-- Unified Compact Theme Control Card (All Colors In One Card) -->
+        <div class="theme-unified-card" id="themeControlCard">
+            <div class="theme-card-header">
+                <div class="theme-card-header-left">
+                    <span class="theme-indicator-point"></span>
+                    <span class="theme-card-title" id="themeCardTitle">Hyper Ice</span>
+                </div>
+                <span class="theme-card-tag" id="themeCardTag">#00F2FE</span>
+            </div>
+
+            <div class="theme-swatches-row">
+                <button class="swatch-pill-btn" data-theme="emerald" title="Matrix Mint" id="swatchEmerald">
+                    <span class="swatch-circle emerald"></span>
+                    <span>Mint</span>
+                </button>
+
+                <button class="swatch-pill-btn" data-theme="cyberpunk" title="Cyberpunk" id="swatchCyberpunk">
+                    <span class="swatch-circle cyberpunk"></span>
+                    <span>Neon</span>
+                </button>
+
+                <button class="swatch-pill-btn" data-theme="violet" title="Galactic Nebula" id="swatchViolet">
+                    <span class="swatch-circle violet"></span>
+                    <span>Nebula</span>
+                </button>
+
+                <button class="swatch-pill-btn" data-theme="amber" title="Solar Gold" id="swatchAmber">
+                    <span class="swatch-circle amber"></span>
+                    <span>Gold</span>
+                </button>
+
+                <button class="swatch-pill-btn active" data-theme="ice" title="Hyper Ice" id="swatchIce">
+                    <span class="swatch-circle ice"></span>
+                    <span>Ice</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- FOOTER SECTION (CARD & CREATOR SIGNATURE) -->
+        <footer class="showcase-footer" id="showcaseFooter">
+            <!-- 2. Card-Style Component Section (Code & Content) -->
+            <div class="footer-card" id="footerCard">
+                <!-- Card Header -->
+                <div class="footer-card-header">
+                <div class="card-header-left">
+                    <div class="mac-window-dots">
+                        <span class="mac-dot close" title="Close"></span>
+                        <span class="mac-dot min" title="Minimize"></span>
+                        <span class="mac-dot max" title="Expand"></span>
+                    </div>
+                    <div class="code-file-badge">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                        <span id="footerFileName">navbar.html</span>
+                    </div>
+                    <span class="footer-theme-tag" id="footerThemeTag">
+                        <span class="pulse-point-sm"></span>
+                        <span id="footerThemeName">Hyper Ice</span>
+                    </span>
+                </div>
+
+                <div class="card-header-right">
+                    <div class="card-tabs" role="tablist">
+                        <button class="card-tab-btn active" data-tab="html" id="tabBtnHtml">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            <span>HTML</span>
+                        </button>
+                        <button class="card-tab-btn" data-tab="css" id="tabBtnCss">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                                <path d="M2 12h20"></path>
+                            </svg>
+                            <span>CSS Vars</span>
+                        </button>
+                        <button class="card-tab-btn" data-tab="features" id="tabBtnFeatures">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <span>Features</span>
+                        </button>
+                    </div>
+
+                    <button class="copy-code-btn" id="copyFooterCodeBtn" title="Copy snippet to clipboard">
+                        <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span id="copyBtnText">Copy Code</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card Body Panels -->
+            <div class="footer-card-body">
+                <!-- Tab Panel 1: HTML Snippet -->
+                <div class="footer-tab-panel active" data-panel="html" id="panelHtml">
+                    <div class="code-viewport">
+                        <pre class="code-pre"><code><span class="com">&lt;!-- Liquid Glass Centered Navigation Bar Component --&gt;</span>
+&lt;<span class="kwd">header</span> <span class="attr">class</span>=<span class="str">"navbar"</span>&gt;
+  <span class="com">&lt;!-- Left Brand Logo --&gt;</span>
+  &lt;<span class="kwd">a</span> <span class="attr">href</span>=<span class="str">"#"</span> <span class="attr">class</span>=<span class="str">"logo"</span>&gt;
+    &lt;<span class="kwd">div</span> <span class="attr">class</span>=<span class="str">"logo-mark"</span>&gt;M&lt;/<span class="kwd">div</span>&gt;
+    &lt;<span class="kwd">div</span> <span class="attr">class</span>=<span class="str">"logo-info"</span>&gt;
+      &lt;<span class="kwd">strong</span>&gt;Navbar&lt;/<span class="kwd">strong</span>&gt;
+      &lt;<span class="kwd">span</span>&gt;Build • Automate • Grow&lt;/<span class="kwd">span</span>&gt;
+    &lt;/<span class="kwd">div</span>&gt;
+  &lt;/<span class="kwd">a</span>&gt;
+
+  <span class="com">&lt;!-- Middle Centered Navigation Links --&gt;</span>
+  &lt;<span class="kwd">nav</span> <span class="attr">class</span>=<span class="str">"nav-links"</span>&gt;
+    &lt;<span class="kwd">div</span> <span class="attr">class</span>=<span class="str">"active-liquid"</span>&gt;&lt;/<span class="kwd">div</span>&gt;
+    &lt;<span class="kwd">a</span> <span class="attr">href</span>=<span class="str">"#home"</span> <span class="attr">class</span>=<span class="str">"nav-link"</span>&gt;Home&lt;/<span class="kwd">a</span>&gt;
+    &lt;<span class="kwd">a</span> <span class="attr">href</span>=<span class="str">"#about"</span> <span class="attr">class</span>=<span class="str">"nav-link"</span>&gt;About&lt;/<span class="kwd">a</span>&gt;
+    &lt;<span class="kwd">a</span> <span class="attr">href</span>=<span class="str">"#services"</span> <span class="attr">class</span>=<span class="str">"nav-link"</span>&gt;Services&lt;/<span class="kwd">a</span>&gt;
+    &lt;<span class="kwd">a</span> <span class="attr">href</span>=<span class="str">"#projects"</span> <span class="attr">class</span>=<span class="str">"nav-link"</span>&gt;Projects&lt;/<span class="kwd">a</span>&gt;
+    &lt;<span class="kwd">a</span> <span class="attr">href</span>=<span class="str">"#blog"</span> <span class="attr">class</span>=<span class="str">"nav-link"</span>&gt;Blog&lt;/<span class="kwd">a</span>&gt;
+    &lt;<span class="kwd">a</span> <span class="attr">href</span>=<span class="str">"#contact"</span> <span class="attr">class</span>=<span class="str">"nav-link active"</span>&gt;Contact&lt;/<span class="kwd">a</span>&gt;
+  &lt;/<span class="kwd">nav</span>&gt;
+
+  <span class="com">&lt;!-- Right Actions (Search + Login) --&gt;</span>
+  &lt;<span class="kwd">div</span> <span class="attr">class</span>=<span class="str">"actions"</span>&gt;
+    &lt;<span class="kwd">div</span> <span class="attr">class</span>=<span class="str">"search-wrapper closed"</span>&gt;...&lt;/<span class="kwd">div</span>&gt;
+    &lt;<span class="kwd">a</span> <span class="attr">href</span>=<span class="str">"/login/"</span> <span class="attr">class</span>=<span class="str">"login-btn"</span>&gt;
+      &lt;<span class="kwd">span</span>&gt;Login&lt;/<span class="kwd">span</span>&gt;
+      &lt;<span class="kwd">span</span> <span class="attr">class</span>=<span class="str">"login-arrow"</span>&gt;→&lt;/<span class="kwd">span</span>&gt;
+    &lt;/<span class="kwd">a</span>&gt;
+  &lt;/<span class="kwd">div</span>&gt;
+&lt;/<span class="kwd">header</span>&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Tab Panel 2: CSS Theme Variables -->
+                <div class="footer-tab-panel" data-panel="css" id="panelCss">
+                    <div class="code-viewport">
+                        <pre class="code-pre"><code id="codeCssContent"></code></pre>
+                    </div>
+                </div>
+
+                <!-- Tab Panel 3: Features & Setup -->
+                <div class="footer-tab-panel" data-panel="features" id="panelFeatures">
+                    <div class="features-content-grid">
+                        <div class="feature-item-card">
+                            <div class="feature-item-icon">💎</div>
+                            <div class="feature-item-body">
+                                <h4>Liquid Glassmorphism</h4>
+                                <p>Multi-layer 32px backdrop blur, saturation boost, and dynamic specular reflection sweep across the navbar.</p>
+                            </div>
+                        </div>
+
+                        <div class="feature-item-card">
+                            <div class="feature-item-icon">🎯</div>
+                            <div class="feature-item-body">
+                                <h4>Centered Navigation</h4>
+                                <p>Dead-center balanced navigation menu positioning with magnetic cursor physics and active pill tracker.</p>
+                            </div>
+                        </div>
+
+                        <div class="feature-item-card">
+                            <div class="feature-item-icon">⚡</div>
+                            <div class="feature-item-body">
+                                <h4>Dynamic Conic Runner</h4>
+                                <p>Continuous rotating conic-gradient perimeter glow reacting synchronously to each active colorway.</p>
+                            </div>
+                        </div>
+
+                        <div class="feature-item-card">
+                            <div class="feature-item-icon">🎨</div>
+                            <div class="feature-item-body">
+                                <h4>5 Designer Themes</h4>
+                                <p>Hyper Ice, Matrix Mint, Cyberpunk Neon, Galactic Nebula &amp; Solar Gold with Web Audio feedback.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Status Bar -->
+            <div class="footer-card-statusbar">
+                <div class="status-left">
+                    <span class="status-pill">UTF-8</span>
+                    <span class="status-pill">HTML5 • CSS3</span>
+                    <span class="status-pill">Zero Dependencies</span>
+                </div>
+                <div class="status-right">
+                    <span class="status-indicator"></span>
+                    <span>Ready for Production</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Brand Strip -->
+        <div class="footer-brand-strip">
+            <span class="brand-sparkle">✦</span>
+            <span>Crafted with Liquid Glass UI &bull; Follow <strong>@codersmahbubur</strong></span>
+            <span class="brand-sparkle">✦</span>
+        </div>
+    </footer>
+</main>
+
+
+
+    <script>
+
+        /* =========================================================
+           SYNTHESIZED AUDIO CHIME ON THEME SWITCH
+        ========================================================= */
+        function playChime(freq = 880) {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(freq * 1.5, ctx.currentTime + 0.08);
+
+                gain.gain.setValueAtTime(0.02, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start();
+                osc.stop(ctx.currentTime + 0.08);
+            } catch (e) { }
+        }
+
+
+        /* =========================================================
+           ELEMENTS
+        ========================================================= */
+
+        const navbar =
+            document.getElementById("navbar");
+
+        const liquid =
+            document.getElementById("liquid");
+
+        const navLinks =
+            document.getElementById("navLinks");
+
+        const activeLiquid =
+            document.getElementById("activeLiquid");
+
+        const links =
+            document.querySelectorAll(".nav-link");
+
+        let current =
+            document.querySelector(".nav-link.active");
+
+
+        /* =========================================================
+           THEME SWITCHING ENGINE (DEFAULT: HYPER ICE)
+        ========================================================= */
+
+        const allThemeButtons =
+            document.querySelectorAll("[data-theme]");
+
+        const themeFrequencies = {
+            emerald: 520,
+            cyberpunk: 740,
+            violet: 660,
+            amber: 580,
+            ice: 880
+        };
+
+        const themeInfoMap = {
+            emerald: { title: "Matrix Mint", hex: "#00F5A0" },
+            cyberpunk: { title: "Cyberpunk Neon", hex: "#FF007F" },
+            violet: { title: "Galactic Nebula", hex: "#8B5CF6" },
+            amber: { title: "Solar Gold", hex: "#FFB703" },
+            ice: { title: "Hyper Ice", hex: "#00F2FE" }
+        };
+
+        const themeCssVars = {
+            ice: `:root, body[data-theme="ice"] {
+  --theme-name: "Hyper Ice";
+  --primary: #00f2fe;
+  --primary-2: #4facfe;
+  --primary-rgb: 0, 242, 254;
+  --primary-glow: rgba(0, 242, 254, 0.6);
+  --dark: #010c14;
+  --dark-card: rgba(3, 22, 36, 0.72);
+  --gradient-accent: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  --conic-border: conic-gradient(from 180deg at 50% 50%, #00f2fe, #4facfe, #a8ff78, #00f2fe);
+}`,
+            emerald: `body[data-theme="emerald"] {
+  --theme-name: "Matrix Mint";
+  --primary: #00f5a0;
+  --primary-2: #00d9f5;
+  --primary-rgb: 0, 245, 160;
+  --primary-glow: rgba(0, 245, 160, 0.55);
+  --dark: #020805;
+  --dark-card: rgba(6, 18, 12, 0.72);
+  --gradient-accent: linear-gradient(135deg, #00f5a0 0%, #00d9f5 100%);
+  --conic-border: conic-gradient(from 180deg at 50% 50%, #00f5a0, #00d9f5, #7928ca, #00f5a0);
+}`,
+            cyberpunk: `body[data-theme="cyberpunk"] {
+  --theme-name: "Cyberpunk";
+  --primary: #ff007f;
+  --primary-2: #9d00ff;
+  --primary-rgb: 255, 0, 127;
+  --primary-glow: rgba(255, 0, 127, 0.6);
+  --dark: #0a0110;
+  --dark-card: rgba(24, 5, 32, 0.72);
+  --gradient-accent: linear-gradient(135deg, #ff007f 0%, #9d00ff 50%, #00f0ff 100%);
+  --conic-border: conic-gradient(from 180deg at 50% 50%, #ff007f, #9d00ff, #00f0ff, #ff007f);
+}`,
+            violet: `body[data-theme="violet"] {
+  --theme-name: "Galactic Nebula";
+  --primary: #8b5cf6;
+  --primary-2: #38bdf8;
+  --primary-rgb: 139, 92, 246;
+  --primary-glow: rgba(139, 92, 246, 0.6);
+  --dark: #040514;
+  --dark-card: rgba(12, 11, 35, 0.72);
+  --gradient-accent: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #38bdf8 100%);
+  --conic-border: conic-gradient(from 180deg at 50% 50%, #8b5cf6, #38bdf8, #ec4899, #8b5cf6);
+}`,
+            amber: `body[data-theme="amber"] {
+  --theme-name: "Solar Gold";
+  --primary: #ffb703;
+  --primary-2: #fb8500;
+  --primary-rgb: 255, 183, 3;
+  --primary-glow: rgba(255, 183, 3, 0.6);
+  --dark: #120701;
+  --dark-card: rgba(30, 15, 3, 0.72);
+  --gradient-accent: linear-gradient(135deg, #ffb703 0%, #fb8500 50%, #ff5400 100%);
+  --conic-border: conic-gradient(from 180deg at 50% 50%, #ffb703, #fb8500, #ffe600, #ffb703);
+}`
+        };
+
+        const rawSnippets = {
+            html: `<!-- Liquid Glass Centered Navigation Bar Component -->
+<header class="navbar">
+  <!-- Left Brand Logo -->
+  <a href="#" class="logo">
+    <div class="logo-mark">M</div>
+    <div class="logo-info">
+      <strong>Navbar</strong>
+      <span>Build • Automate • Grow</span>
+    </div>
+  </a>
+
+  <!-- Middle Centered Navigation Links -->
+  <nav class="nav-links">
+    <div class="active-liquid"></div>
+    <a href="#home" class="nav-link">Home</a>
+    <a href="#about" class="nav-link">About</a>
+    <a href="#services" class="nav-link">Services</a>
+    <a href="#projects" class="nav-link">Projects</a>
+    <a href="#blog" class="nav-link">Blog</a>
+    <a href="#contact" class="nav-link active">Contact</a>
+  </nav>
+
+  <!-- Right Actions (Search + Login) -->
+  <div class="actions">
+    <div class="search-wrapper closed">...</div>
+    <a href="/login/" class="login-btn">
+      <span>Login</span>
+      <span class="login-arrow">→</span>
+    </a>
+  </div>
+</header>`,
+            css: "",
+            features: `Liquid Glass Navbar - Core Architecture:
+• Centered Navigation: Dead-center desktop menu positioning with absolute alignment.
+• Liquid Glassmorphism: 32px backdrop filter blur with specular reflection sweep.
+• Dynamic Conic Runner: Rotating multi-color border highlight around the perimeter.
+• Magnetic Physics: Smooth quadratic bezier pill and cursor follower physics.
+• 5 Designer Themes: Hyper Ice, Matrix Mint, Cyberpunk, Galactic Nebula, Solar Gold.
+• Zero Dependencies: Pure Vanilla HTML, CSS, and modern JavaScript.`
+        };
+
+        function updateCssTabContent(themeKey) {
+            const raw = themeCssVars[themeKey] || themeCssVars.ice;
+            rawSnippets.css = raw;
+            const cssCodeEl = document.getElementById("codeCssContent");
+            if (cssCodeEl) {
+                cssCodeEl.innerHTML = raw
+                    .replace(/(body\[data-theme="[^"]+"\]|:root)/g, '<span class="kwd">$1</span>')
+                    .replace(/(--[a-zA-Z0-9-]+):/g, '<span class="attr">$1</span>:')
+                    .replace(/(#[0-9a-fA-F]{3,8}|rgba?\([^)]+\)|conic-gradient\([^)]+\)|linear-gradient\([^)]+\)|"[^"]*")/g, '<span class="val">$1</span>');
+            }
+        }
+
+        function applyTheme(themeName) {
+            document.body.setAttribute("data-theme", themeName);
+
+            allThemeButtons.forEach(btn => {
+                if (btn.getAttribute("data-theme") === themeName) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            });
+
+            // Update title and tag in the unified theme card & footer card
+            const info = themeInfoMap[themeName];
+            if (info) {
+                const titleEl = document.getElementById("themeCardTitle");
+                const tagEl = document.getElementById("themeCardTag");
+                const footerThemeName = document.getElementById("footerThemeName");
+                if (titleEl) titleEl.textContent = info.title;
+                if (tagEl) tagEl.textContent = info.hex;
+                if (footerThemeName) footerThemeName.textContent = info.title;
+            }
+
+            // Sync dynamic CSS theme variables snippet
+            updateCssTabContent(themeName);
+
+            // Audio feedback
+            playChime(themeFrequencies[themeName] || 880);
+
+            // Update active pill position after theme transition
+            setTimeout(() => {
+                moveActive(current);
+            }, 60);
+        }
+
+        allThemeButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const selected = btn.getAttribute("data-theme");
+                applyTheme(selected);
+            });
+        });
+
+
+        /* =========================================================
+           LIQUID MOUSE FOLLOW
+        ========================================================= */
+
+        navbar.addEventListener("mousemove", (event) => {
+
+            const rect =
+                navbar.getBoundingClientRect();
+
+            liquid.style.left =
+                `${event.clientX - rect.left}px`;
+
+            liquid.style.top =
+                `${event.clientY - rect.top}px`;
+
+        });
+
+
+        /* =========================================================
+           ACTIVE LIQUID PILL
+        ========================================================= */
+
+        function moveActive(link) {
+
+            if (!link || window.innerWidth <= 960) return;
+
+            const linkRect =
+                link.getBoundingClientRect();
+
+            const navRect =
+                navLinks.getBoundingClientRect();
+
+            activeLiquid.style.left =
+                `${linkRect.left - navRect.left}px`;
+
+            activeLiquid.style.width =
+                `${linkRect.width}px`;
+        }
+
+
+        window.addEventListener("load", () => {
+
+            setTimeout(() => {
+
+                moveActive(current);
+
+            }, 200);
+
+        });
+
+
+        /* =========================================================
+           MAGNETIC NAVIGATION
+        ========================================================= */
+
+        links.forEach(link => {
+
+            link.addEventListener("mousemove", (event) => {
+
+                if (window.innerWidth <= 960) return;
+
+                const rect =
+                    link.getBoundingClientRect();
+
+                const x =
+                    event.clientX -
+                    rect.left -
+                    rect.width / 2;
+
+                const y =
+                    event.clientY -
+                    rect.top -
+                    rect.height / 2;
+
+                link.style.transform =
+                    `translate(${x * .1}px, ${y * .1}px) scale(1.03)`;
+
+                moveActive(link);
+
+            });
+
+
+            link.addEventListener("mouseleave", () => {
+
+                link.style.transform = "";
+
+                moveActive(current);
+
+            });
+
+
+            link.addEventListener("click", () => {
+
+                links.forEach(item => {
+
+                    item.classList.remove("active");
+
+                });
+
+                link.classList.add("active");
+                current = link;
+                moveActive(current);
+
+            });
+
+        });
+
+
+        /* =========================================================
+           SEARCH
+        ========================================================= */
+
+        const searchWrapper =
+            document.getElementById("searchWrapper");
+
+        const searchBtn =
+            document.getElementById("searchBtn");
+
+        const searchClose =
+            document.getElementById("searchClose");
+
+        const searchInput =
+            document.getElementById("searchInput");
+
+
+        /* OPEN */
+
+        function openSearch() {
+            searchWrapper.classList.remove("closed");
+            searchWrapper.classList.add("open");
+            setTimeout(() => {
+                searchInput.focus();
+            }, 350);
+        }
+
+        searchBtn.addEventListener("click", openSearch);
+
+
+        /* CLOSE */
+
+        function closeSearch() {
+            searchWrapper.classList.remove("open");
+            searchWrapper.classList.add("closed");
+            searchInput.value = "";
+        }
+
+        searchClose.addEventListener("click", closeSearch);
+
+
+        /* ESC */
+
+        document.addEventListener("keydown", (event) => {
+            if (
+                event.key === "Escape" &&
+                searchWrapper.classList.contains("open")
+            ) {
+                closeSearch();
+            }
+        });
+
+
+        /* ENTER */
+
+        searchInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                const query = searchInput.value.trim();
+                if (!query) return;
+                console.log("Searching:", query);
+            }
+        });
+
+
+        /* =========================================================
+           MOBILE MENU
+        ========================================================= */
+
+        const menu =
+            document.getElementById("menu");
+
+        menu.addEventListener("click", () => {
+            navLinks.classList.toggle("open");
+        });
+
+
+
+
+
+        /* =========================================================
+           RESIZE
+        ========================================================= */
+
+        window.addEventListener("resize", () => {
+            moveActive(current);
+        });
+
+
+        /* =========================================================
+           FOOTER CARD TABS & CLIPBOARD INTERACTIONS
+        ========================================================= */
+        const footerTabBtns = document.querySelectorAll(".card-tab-btn");
+        const footerTabPanels = document.querySelectorAll(".footer-tab-panel");
+        let activeTabKey = "html";
+
+        footerTabBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const tab = btn.getAttribute("data-tab");
+                activeTabKey = tab;
+
+                footerTabBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+
+                footerTabPanels.forEach(panel => {
+                    if (panel.getAttribute("data-panel") === tab) {
+                        panel.classList.add("active");
+                    } else {
+                        panel.classList.remove("active");
+                    }
+                });
+
+                const fileNameEl = document.getElementById("footerFileName");
+                if (fileNameEl) {
+                    if (tab === "html") fileNameEl.textContent = "navbar.html";
+                    else if (tab === "css") fileNameEl.textContent = "theme-variables.css";
+                    else fileNameEl.textContent = "features.md";
+                }
+
+                playChime(640);
+            });
+        });
+
+        const copyFooterCodeBtn = document.getElementById("copyFooterCodeBtn");
+        const copyBtnText = document.getElementById("copyBtnText");
+
+        if (copyFooterCodeBtn) {
+            copyFooterCodeBtn.addEventListener("click", async () => {
+                const snippet = rawSnippets[activeTabKey] || rawSnippets.html;
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        await navigator.clipboard.writeText(snippet);
+                    } else {
+                        const ta = document.createElement("textarea");
+                        ta.value = snippet;
+                        document.body.appendChild(ta);
+                        ta.select();
+                        document.execCommand("copy");
+                        document.body.removeChild(ta);
+                    }
+                } catch (e) {
+                    const ta = document.createElement("textarea");
+                    ta.value = snippet;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(ta);
+                }
+
+                if (copyBtnText) copyBtnText.textContent = "Copied! ✨";
+                playChime(1040);
+                setTimeout(() => {
+                    if (copyBtnText) copyBtnText.textContent = "Copy Code";
+                }, 2000);
+            });
+        }
+
+        // Initialize default CSS theme code on page load
+        updateCssTabContent("ice");
+
+
+        /* =========================================================
+           CHOREOGRAPHED INSTAGRAM VIDEO DEMO SEQUENCE
+        ========================================================= */
+        const virtualCursor = document.getElementById("virtualCursor");
+        const cursorClickRing = document.getElementById("cursorClickRing");
+
+        const wait = ms => new Promise(r => setTimeout(r, ms));
+
+        let currentCursorPos = { x: -100, y: -100 };
+
+        async function moveCursorSmooth(element, offsetX = 0, offsetY = 0, overrideDuration = null) {
+            if (!element) return;
+            const rect = element.getBoundingClientRect();
+            const targetX = Math.round(rect.left + rect.width / 2 + offsetX);
+            const targetY = Math.round(rect.top + rect.height / 2 + offsetY);
+
+            let duration;
+            if (overrideDuration) {
+                duration = overrideDuration;
+            } else {
+                if (currentCursorPos.x < 0) {
+                    duration = 680;
+                } else {
+                    const dx = targetX - currentCursorPos.x;
+                    const dy = targetY - currentCursorPos.y;
+                    const dist = Math.hypot(dx, dy);
+                    // Proportional, human-like consistent speed with a calm floor of 620ms
+                    duration = Math.min(950, Math.max(620, Math.round(dist * 0.85 + 420)));
+                }
+            }
+
+            virtualCursor.style.transition = `transform ${duration}ms cubic-bezier(0.25, 1, 0.4, 1)`;
+            virtualCursor.style.transform = `translate(${targetX}px, ${targetY}px)`;
+            currentCursorPos = { x: targetX, y: targetY };
+
+            // Wait for transition to complete plus a graceful settle pause before any interaction
+            await wait(duration + 120);
+        }
+
+        async function triggerClickAt(element) {
+            if (!element) return;
+            await wait(100); // Natural settling pause before press
+            virtualCursor.classList.add("clicking");
+            cursorClickRing.classList.remove("ping");
+            void cursorClickRing.offsetWidth;
+            cursorClickRing.classList.add("ping");
+            element.click();
+            await wait(220); // Hold press
+            virtualCursor.classList.remove("clicking");
+            await wait(200); // Calm pause before moving
+        }
+
+        async function clickAndHold(element, holdMs = 850) {
+            if (!element) return;
+            await wait(120); // Natural pause before click down
+            virtualCursor.classList.add("clicking");
+            cursorClickRing.classList.remove("ping");
+            void cursorClickRing.offsetWidth;
+            cursorClickRing.classList.add("ping");
+
+            // Tactile physical scale on button
+            element.style.transition = "transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1)";
+            element.style.transform = "scale(0.92)";
+
+            // Trigger action (theme switch, tab switch, chime, etc.)
+            element.click();
+
+            // Click and hold as requested!
+            await wait(holdMs);
+
+            // Release button smoothly
+            element.style.transform = "";
+            virtualCursor.classList.remove("clicking");
+            await wait(280); // Calm pause before cursor moves away
+        }
+
+        window.startInstaDemo = async function() {
+            // Keep window perfectly centered at top throughout the video
+            window.scrollTo(0, 0);
+            virtualCursor.classList.add("active");
+            applyTheme("ice");
+
+            // 1. Initial position smoothly glides onto brandLogo
+            const logo = document.getElementById("brandLogo");
+            if (logo) {
+                const logoRect = logo.getBoundingClientRect();
+                currentCursorPos = { x: logoRect.left + 20, y: logoRect.top - 60 };
+                virtualCursor.style.transition = "none";
+                virtualCursor.style.transform = `translate(${currentCursorPos.x}px, ${currentCursorPos.y}px)`;
+                await wait(80);
+                await moveCursorSmooth(logo, 0, 0, 700);
+                await wait(400);
+            }
+
+            // 2. Smoothly move cursor over each navbar button
+            const navItems = [
+                document.getElementById("navHome"),
+                document.getElementById("navAbout"),
+                document.getElementById("navServices"),
+                document.getElementById("navProjects"),
+                document.getElementById("navBlog"),
+                document.getElementById("navContact"),
+                document.getElementById("navHome")
+            ];
+
+            for (const item of navItems) {
+                if (item) {
+                    await moveCursorSmooth(item);
+                    await triggerClickAt(item);
+                }
+            }
+
+            // 2.5 Smoothly move over the Coder's Mahbubur Instagram button
+            const creatorBtn = document.getElementById("creatorBtn");
+            if (creatorBtn) {
+                await moveCursorSmooth(creatorBtn);
+                await wait(750); // Hover and show liquid glow & shimmer
+            }
+
+            // 3. Click search icon and show search box expanding
+            await moveCursorSmooth(searchBtn);
+            await triggerClickAt(searchBtn);
+            await wait(500); // Show expanded search box!
+
+            // Smooth typing into search
+            const textToType = "Liquid Glass UI";
+            searchInput.value = "";
+            for (let i = 0; i < textToType.length; i++) {
+                searchInput.value += textToType[i];
+                await wait(60);
+            }
+            await wait(750); // Hold to demonstrate search box expansion
+
+            // Close search smoothly
+            await moveCursorSmooth(searchClose);
+            await triggerClickAt(searchClose);
+            await wait(450);
+
+            // 4. Click and hold on each theme, then move to the next theme and click it
+            const themeSwatches = [
+                document.getElementById("swatchEmerald"),
+                document.getElementById("swatchCyberpunk"),
+                document.getElementById("swatchViolet"),
+                document.getElementById("swatchAmber"),
+                document.getElementById("swatchIce")
+            ];
+
+            for (const swatch of themeSwatches) {
+                if (swatch) {
+                    // Smooth glide to theme button
+                    await moveCursorSmooth(swatch);
+                    // Click and hold for 850ms to demonstrate the theme!
+                    await clickAndHold(swatch, 850);
+                }
+            }
+
+            // 5. Demonstrate the Footer Code Card (all content centered on screen, no scrolling)
+            const tabCss = document.getElementById("tabBtnCss");
+            if (tabCss) {
+                await moveCursorSmooth(tabCss);
+                await triggerClickAt(tabCss);
+                await wait(600);
+            }
+
+            const copyBtn = document.getElementById("copyFooterCodeBtn");
+            if (copyBtn) {
+                await moveCursorSmooth(copyBtn);
+                await clickAndHold(copyBtn, 650);
+                await wait(600);
+            }
+
+            // Hold end frame
+            await wait(1200);
+
+            // Mark completion for video recorder
+            let completeEl = document.getElementById("demoComplete");
+            if (!completeEl) {
+                completeEl = document.createElement("div");
+                completeEl.id = "demoComplete";
+                document.body.appendChild(completeEl);
+            }
+            completeEl.classList.add("done");
+            console.log("Demo Sequence Completed!");
+        };
+
+        // Auto-run if URL contains ?demo=1
+        if (window.location.search.includes("demo=1")) {
+            window.addEventListener("load", () => {
+                setTimeout(window.startInstaDemo, 600);
+            });
+        }
+
+    </script>
+
+</body>
+
+</html>
